@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lokace</title>
+<style>
+:root{--bg:#171512;--panel:#211e19;--gold:#c99d4a;--muted:#b9ad95}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f2ead9;font-family:Georgia,"Times New Roman",serif}
+header{padding:28px 6vw 18px;border-bottom:1px solid #4a4032;background:linear-gradient(180deg,#262118,#171512)}
+h1{margin:0;font-size:clamp(2rem,5vw,4rem);letter-spacing:.06em;font-variant:small-caps}.subtitle{color:var(--muted);margin-top:8px;font-size:1.05rem}
+main{max-width:1300px;margin:auto;padding:24px}
+
+/* Layout: Mapa určuje výšku, menu se přizpůsobí */
+.map-layout{display:flex;gap:18px;align-items:flex-start}
+.map-wrap{position:relative;flex:1;min-width:0;background:#c9b889;border:10px solid #4c3b25;border-radius:8px;box-shadow:0 12px 35px #0008;overflow:hidden;line-height:0}
+.map-image{display:block;width:100%;height:auto}
+.map-overlay{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* Styly bodů na mapě a animace skrytí */
+.point{cursor:pointer;transition:opacity .2s ease}.point circle{fill:#8f3f32;stroke:#f8e8bd;stroke-width:3}.point:hover circle,.point:focus circle,.point.is-active circle{fill:#c99d4a}.point:hover text,.point:focus text,.point.is-active text{fill:#f2c45f}.point text{pointer-events:none;fill:#fff;font-size:17px;font-weight:bold;paint-order:stroke;stroke:#111;stroke-width:4px;stroke-linejoin:round}.castle-icon{fill:#8f3f32;stroke:#f8e8bd;stroke-width:2}.point.castle:hover .castle-icon,.point.castle:focus .castle-icon,.point.castle.is-active .castle-icon{fill:#c99d4a}.point.castle:hover text,.point.castle:focus text,.point.castle.is-active text{fill:#8f3f32}
+
+/* Třída pro skrytí všech značek (zobrazí se jen .is-active při hoveru) */
+.map-overlay.hide-all .point{opacity:0;pointer-events:none}
+.map-overlay.hide-all .point.is-active{opacity:1}
+
+/* Kontejner pro menu a záložky */
+.menu-container{width:260px;flex-shrink:0;position:relative;align-self:stretch}
+.location-menu{position:absolute;inset:0;background:var(--panel);border:1px solid #493f31;border-radius:8px;padding:16px;display:flex;flex-direction:column}
+
+/* Styl přepínače zobrazení */
+.map-toggle{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #332b21;user-select:none;cursor:pointer}
+.map-toggle input{accent-color:var(--gold);cursor:pointer}
+
+/* Styly záložek (Tabs) */
+.tab-nav{display:flex;gap:4px;margin-bottom:12px;border-bottom:1px solid #493f31;padding-bottom:8px;flex-shrink:0}
+.tab-btn{background:transparent;border:none;color:var(--muted);font-family:inherit;font-size:.95rem;font-weight:bold;padding:6px 10px;cursor:pointer;border-radius:4px;transition:all .15s}
+.tab-btn:hover{color:#e8dcc4;background:#2a251e}
+.tab-btn.is-active{color:#f2c45f;background:#3a3021}
+
+/* Obsah záložek */
+.tab-content{display:none;flex-direction:column;flex:1;overflow:hidden}
+.tab-content.is-active{display:flex}
+
+.location-menu ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;overflow-y:auto;flex:1}
+
+/* Vzhled posuvníku */
+.location-menu ul::-webkit-scrollbar{width:6px}
+.location-menu ul::-webkit-scrollbar-track{background:#1a1713;border-radius:4px}
+.location-menu ul::-webkit-scrollbar-thumb{background:#493f31;border-radius:4px}
+.location-menu ul::-webkit-scrollbar-thumb:hover{background:#8d6b35}
+
+.location-menu a{display:block;padding:8px 10px;border-radius:5px;color:#e8dcc4;text-decoration:none;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}.location-menu a:hover,.location-menu a:focus,.location-menu a.is-active{background:#3a3021;color:#f2c45f;border-color:#8d6b35;outline:none}.location-menu a .kind{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}.legend{display:flex;gap:18px;flex-wrap:wrap;padding:14px 2px;color:var(--muted);font-size:.92rem}.info{margin-top:25px;display:grid;grid-template-columns:1.3fr .7fr;gap:20px}.card{background:var(--panel);border:1px solid #493f31;border-radius:8px;padding:20px}.card h2{margin-top:0;color:#e7c980}.card a{color:#e7c980}.note{color:#bfb4a0;line-height:1.6}
+
+@media(max-width:800px){
+  .map-layout{flex-direction:column}
+  .menu-container{width:100%;height:auto}
+  .location-menu{position:static;inset:auto}
+  .location-menu ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow-y:visible}
+  .info{grid-template-columns:1fr}
+  .point text{font-size:15px}
+}
+@media(max-width:460px){.location-menu ul{grid-template-columns:1fr}main{padding:14px}}
+</style>
+</head>
+<body>
+<header><h1>Lokace</h1><div class="subtitle">Interaktivní historická mapa sídel členů hradeckého dvora Elišky Rejčky.</div></header>
+<main>
+<div class="map-layout">
+  <section class="map-wrap" id="mapWrap">
+    <img class="map-image" src="assets/mapa.png" alt="Mapa českých zemí s vyznačenými městy a hrady">
+    <svg class="map-overlay" viewBox="0 0 1693 905" preserveAspectRatio="none" aria-label="Interaktivní vrstva mapy">
+      <g class="point" data-name="Praha" data-type="město" tabindex="0" aria-label="Praha, město"><circle cx="558" cy="403" r="10"/><text x="575" y="397">Praha</text></g>
+      <g class="point" data-name="Jaroměř" data-type="město" tabindex="0" aria-label="Jaroměř, město"><circle cx="823" cy="320" r="10"/><text x="840" y="314">Jaroměř</text></g>
+      <g class="point" data-name="Hradec Králové" data-type="město" tabindex="0" aria-label="Hradec Králové, město"><circle cx="810" cy="365" r="10"/><text x="827" y="359">Hradec Králové</text></g>
+      <g class="point" data-name="Chrudim" data-type="město" tabindex="0" aria-label="Chrudim, město"><circle cx="808" cy="437" r="10"/><text x="715" y="415">Chrudim</text></g>
+      <g class="point" data-name="Vysoké Mýto" data-type="město" tabindex="0" aria-label="Vysoké Mýto, město"><circle cx="868" cy="437" r="10"/><text x="885" y="431">Vysoké Mýto</text></g>
+      <g class="point" data-name="Polička" data-type="město" tabindex="0" aria-label="Polička, město"><circle cx="887" cy="502" r="10"/><text x="904" y="496">Polička</text></g>
+      <g class="point" data-name="Olomouc" data-type="město" tabindex="0" aria-label="Olomouc, město"><circle cx="1065" cy="538" r="10"/><text x="1082" y="532">Olomouc</text></g>
+      <g class="point" data-name="Brno" data-type="město" tabindex="0" aria-label="Brno, město"><circle cx="949" cy="649" r="10"/><text x="966" y="643">Brno</text></g>
+      <g class="point castle" data-name="Rabštejn" data-type="hrad" data-link="mista/rabstejn.html" tabindex="0" aria-label="Rabštejn, hrad"><path class="castle-icon"
+    d="M360 405 H376 V403 H374 V398 H376 V393 H374 V391 H375 V385 H372 V389 H369 V385 H366 V389 H363 V385 H361 V391 H362 V393 H360 V398 H362 V403 H360 Z" /><text x="352" y="405" text-anchor="end">Rabštejn</text></g>
+      <g class="point castle" data-name="Lichtenburk (Lichnice)" data-type="hrad" data-link="mista/lichtenburk.html" tabindex="0" aria-label="Lichtenburk, hrad"><path class="castle-icon"
+    d="M772 480 H788 V478 H786 V473 H788 V468 H786 V466 H787 V460 H784 V464 H781 V460 H778 V464 H775 V460 H773 V466 H774 V468 H772 V473 H774 V478 H772 Z" /><text x="798" y="480">Lichtenburk</text></g>
+      <g class="point castle" data-name="Žleby" data-type="hrad" data-link="mista/zleby.html" tabindex="0" aria-label="Žleby, hrad"><path class="castle-icon"
+    d="M751 480 H767 V478 H765 V473 H767 V468 H765 V466 H766 V460 H763 V464 H760 V460 H757 V464 H754 V460 H752 V466 H753 V468 H751 V473 H753 V478 H751 Z" /><text x="743" y="480" text-anchor="end">Žleby</text></g>
+    </svg>
+  </section>
+
+  <div class="menu-container">
+    <aside class="location-menu" aria-label="Seznam lokalit a družin">
+      
+      <!-- Přepínač pro skrytí bodů -->
+      <label class="map-toggle">
+        <input type="checkbox" id="hideMapMarkers">
+        <span>Skrýt značky na mapě</span>
+      </label>
+
+      <nav class="tab-nav">
+        <button class="tab-btn is-active" data-tab="tab-locations">Města a hrady</button>
+        <button class="tab-btn" data-tab="tab-retinues">Družiny</button>
+      </nav>
+
+      <!-- Záložka 1: Města a hrady -->
+      <div id="tab-locations" class="tab-content is-active">
+        <ul id="locationList"></ul>
+      </div>
+
+      <!-- Záložka 2: Družiny -->
+      <div id="tab-retinues" class="tab-content">
+        <ul id="retinueList">
+          <li>
+            <a href="#" data-targets="Jaroměř,Polička,Hradec Králové,Vysoké Mýto,Chrudim">
+              Alžběta Richenza<span class="kind">Královna / Družina</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-targets="Žleby,Lichtenburk (Lichnice)">
+              Matylda ze Žleb a Lichtenburka<span class="kind">Šlechtična / Družina</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-targets="Rabštejn">
+              Jiří z Rabštejna<span class="kind">Rytíř / Družina</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              Petr z Posadowa<span class="kind">Rytíř / Družina</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+<div class="legend"><span>● bod = lokalita</span><span>Najetím zvýrazníš bod a název</span><span>Kliknutím otevřeš detail</span></div>
+
+</main>
+<script>
+const points = [...document.querySelectorAll('.point')];
+const locationList = document.getElementById('locationList');
+const mapOverlay = document.querySelector('.map-overlay');
+const hideMapMarkers = document.getElementById('hideMapMarkers');
+
+// Obsluha přepínače zobrazení značek
+hideMapMarkers.addEventListener('change', (e) => {
+  mapOverlay.classList.toggle('hide-all', e.target.checked);
+});
+
+// Přepínání záložek
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabBtns.forEach(b => b.classList.remove('is-active'));
+    tabContents.forEach(c => c.classList.remove('is-active'));
+    
+    btn.classList.add('is-active');
+    document.getElementById(btn.dataset.tab).classList.add('is-active');
+  });
+});
+
+// Pomocná funkce pro aktivaci lokalit na mapě
+function setPointsActive(namesArray, active) {
+  namesArray.forEach(name => {
+    const trimmedName = name.trim();
+    const point = points.find(p => p.dataset.name === trimmedName);
+    if (point) point.classList.toggle('is-active', active);
+  });
+}
+
+function setActiveLocation(name, active) {
+  setPointsActive([name], active);
+  const link = [...locationList.querySelectorAll('a')].find(a => a.dataset.name === name);
+  if (link) {
+    link.classList.toggle('is-active', active);
+    if (active) link.setAttribute('aria-current', 'true');
+    else link.removeAttribute('aria-current');
+  }
+}
+
+// 1. Generování a obsluha menu "Města a hrady"
+points.sort((a, b) => a.dataset.name.localeCompare(b.dataset.name, 'cs'));
+
+points.forEach(p => {
+  const name = p.dataset.name;
+  const link = document.createElement('a');
+  link.href = p.dataset.link || '#';
+  link.dataset.name = name;
+  link.innerHTML = `${name}<span class="kind">${p.dataset.type === 'hrad' ? 'Hrad' : 'Město'}</span>`;
+  
+  link.addEventListener('mouseenter', () => setActiveLocation(name, true));
+  link.addEventListener('mouseleave', () => setActiveLocation(name, false));
+  link.addEventListener('focus', () => setActiveLocation(name, true));
+  link.addEventListener('blur', () => setActiveLocation(name, false));
+  link.addEventListener('click', event => {
+    if (!p.dataset.link) {
+      event.preventDefault();
+      p.focus();
+    }
+  });
+  locationList.appendChild(document.createElement('li')).appendChild(link);
+
+  p.addEventListener('mouseenter', () => setActiveLocation(name, true));
+  p.addEventListener('mouseleave', () => setActiveLocation(name, false));
+  p.addEventListener('focus', () => setActiveLocation(name, true));
+  p.addEventListener('blur', () => setActiveLocation(name, false));
+  p.addEventListener('click', () => { if (p.dataset.link) location.href = p.dataset.link; });
+  p.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); p.click(); }
+  });
+});
+
+// 2. Obsluha menu "Družiny"
+const retinueLinks = document.querySelectorAll('#retinueList a');
+
+retinueLinks.forEach(link => {
+  const targets = link.dataset.targets ? link.dataset.targets.split(',') : [];
+
+  const handleHover = (active) => {
+    link.classList.toggle('is-active', active);
+    if (targets.length > 0) {
+      setPointsActive(targets, active);
+    }
+  };
+
+  link.addEventListener('mouseenter', () => handleHover(true));
+  link.addEventListener('mouseleave', () => handleHover(false));
+  link.addEventListener('focus', () => handleHover(true));
+  link.addEventListener('blur', () => handleHover(false));
+  
+  // Po kliknutí se nic nestane
+  link.addEventListener('click', e => e.preventDefault());
+});
+</script>
+</body></html>
