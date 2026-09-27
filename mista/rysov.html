@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rysov — Lokace</title>
+<style>
+:root{--bg:#171512;--panel:#211e19;--gold:#d1a554;--muted:#bdb19d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#eee5d2;font-family:Georgia,"Times New Roman",serif}
+header{padding:26px 7vw;border-bottom:1px solid #4a4032;background:linear-gradient(180deg,#282219,#171512)}
+a{color:#e5c67e;text-decoration:underline}
+a:hover{color:#f0d28d;text-decoration:none}
+main{max-width:1000px;margin:auto;padding:28px 22px}
+.back{display:inline-block;margin-bottom:25px}
+.hero{padding:32px;border:1px solid #594a35;background:#211e19;border-radius:10px}
+h1{font-size:clamp(2.3rem,7vw,5rem);margin:.1em 0;color:#f0d28d}
+.kicker{text-transform:uppercase;letter-spacing:.15em;color:#bda77a}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.card{background:var(--panel);padding:24px;border:1px solid #493f31;border-radius:8px}
+h2{color:#e5c67e;margin-top:0}
+.note{color:var(--muted);line-height:1.65}
+
+/* Styl pro obrázek schématu */
+.castle-schema {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #4a4032;
+  display: block;
+}
+
+/* Styl pro tabulku odkazů */
+.links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.link-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #332b21;
+}
+.link-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.link-url {
+  word-break: break-all;
+  font-family: monospace;
+  font-size: 0.95rem;
+}
+.link-desc {
+  color: var(--muted);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+@media(max-width:700px){
+  .grid{grid-template-columns:1fr}
+  .link-row{flex-direction:column;gap:4px}
+  .link-desc{text-align:left}
+}
+</style>
+</head>
+<body>
+<header>
+  <a href="../index.html">← Zpět na mapu</a>
+</header>
+<main>
+  <section class="hero">
+    <div class="kicker">Hrad · Richard z Rysova</div>
+    <h1>Rysov</h1>
+    <p>Zaniknutý hrad nacházející se v blízkosti Tišnovské Nové Vsi.</p>
+  </section>
+
+  <section class="grid">
+    <article class="card">
+      <h2>Základní údaje</h2>
+      <p><strong>GPS:</strong> N 49° 22' 09.0" E 16° 17' 28.0" | 49.36916, 16.29111</p>
+      <p><strong>Období vzniku:</strong> druhá polovina 13. století</p>
+      <p><strong>Stav:</strong> Zaniklý, dochovaly se náznaky příkopu a valu</p>
+      <p><strong>Lokace:</strong> poblíž Tišnovské Nové Vsi (dříve Rysovská Nová Ves)</p>
+      <p class="note">Zaniklý hrad Rysov ve 13. a 14. století stával nad řekou Bobrůvkou v obci Skryje v okrese Brno-venkov.</p>
+    </article>
+
+    <article class="card">
+      <h2>Schéma hradu</h2>
+      <img src="../assets/rysov-schema.jpg" alt="Schéma hradu Rysov" class="castle-schema">
+    </article>
+  </section>
+
+  <section class="card" style="margin-top:20px">
+    <h2>Odkazy</h2>
+    <div class="links-list">
+      <div class="link-row">
+        <a href="https://pamatkovykatalog.cz/hrad-rysov-14006320" target="_blank" class="link-url">https://pamatkovykatalog.cz/hrad-rysov-14006320</a>
+        <span class="link-desc">Národní památkový ústav / Památkový katalog</span>
+      </div>
+      <div class="link-row">
+        <a href="https://cs.wikipedia.org/wiki/Rysov_(hrad)" target="_blank" class="link-url">https://cs.wikipedia.org/wiki/Rysov_(hrad)</a>
+        <span class="link-desc">Wikipedie</span>
+      </div>
+      <div class="link-row">
+        <a href="https://www.hrady-zriceniny.cz/hrad_rysov.htm" target="_blank" class="link-url">https://www.hrady-zriceniny.cz/hrad_rysov.htm</a>
+        <span class="link-desc">Hrady a zříceniny</span>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
