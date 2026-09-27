@@ -50,6 +50,23 @@ main{max-width:1300px;margin:auto;padding:24px}
 
 .location-menu a{display:block;padding:8px 10px;border-radius:5px;color:#e8dcc4;text-decoration:none;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}.location-menu a:hover,.location-menu a:focus,.location-menu a.is-active{background:#3a3021;color:#f2c45f;border-color:#8d6b35;outline:none}.location-menu a .kind{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}.legend{display:flex;gap:18px;flex-wrap:wrap;padding:14px 2px;color:var(--muted);font-size:.92rem}
 
+/* Styl pro položky družin s erby */
+#retinueList a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.retinue-icon {
+  width: 28px;
+  height: 34px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.retinue-info {
+  display: flex;
+  flex-direction: column;
+}
+
 @media(max-width:800px){
   .map-layout{flex-direction:column}
   .menu-container{width:100%;height:auto;min-height:0}
@@ -104,22 +121,34 @@ main{max-width:1300px;margin:auto;padding:24px}
         <ul id="retinueList">
           <li>
             <a href="#" data-targets="Jaroměř,Polička,Hradec Králové,Vysoké Mýto,Chrudim">
-              Alžběta Richenza<span class="kind">Královna / Družina</span>
+              <img src="assets/richenza-erb.png" alt="Erb Alžběta Richenza" class="retinue-icon">
+              <span class="retinue-info">
+                Alžběta Richenza<span class="kind">Královna / Družina</span>
+              </span>
             </a>
           </li>
           <li>
             <a href="#" data-targets="Žleby,Lichtenburk (Lichnice)">
-              Matylda ze Žleb a Lichtenburka<span class="kind">Šlechtična / Družina</span>
+              <img src="assets/lichtenburk-erb.png" alt="Erb Matylda ze Žleb a Lichtenburka" class="retinue-icon">
+              <span class="retinue-info">
+                Matylda ze Žleb a Lichtenburka<span class="kind">Šlechtična / Družina</span>
+              </span>
             </a>
           </li>
           <li>
             <a href="#" data-targets="Rabštejn">
-              Jiří z Rabštejna<span class="kind">Rytíř / Družina</span>
+              <img src="assets/rabstejn-erb.png" alt="Erb Jiří z Rabštejna" class="retinue-icon">
+              <span class="retinue-info">
+                Jiří z Rabštejna<span class="kind">Rytíř / Družina</span>
+              </span>
             </a>
           </li>
           <li>
             <a href="#">
-              Petr z Posadowa<span class="kind">Rytíř / Družina</span>
+              <img src="assets/posadow-erb.png" alt="Erb Petr z Posadowa" class="retinue-icon">
+              <span class="retinue-info">
+                Petr z Posadowa<span class="kind">Rytíř / Družina</span>
+              </span>
             </a>
           </li>
         </ul>
