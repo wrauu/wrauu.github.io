@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lokace</title>
+<title>Lokace — České země ve 13.–14. století</title>
 <style>
 :root{--bg:#171512;--panel:#211e19;--gold:#c99d4a;--muted:#b9ad95}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f2ead9;font-family:Georgia,"Times New Roman",serif}
@@ -10,28 +10,28 @@ header{padding:28px 6vw 18px;border-bottom:1px solid #4a4032;background:linear-g
 h1{margin:0;font-size:clamp(2rem,5vw,4rem);letter-spacing:.06em;font-variant:small-caps}.subtitle{color:var(--muted);margin-top:8px;font-size:1.05rem}
 main{max-width:1300px;margin:auto;padding:24px}
 
-/* Layout: Mapa určuje výšku, menu se přizpůsobí */
+/* Layout: Původní nastavení */
 .map-layout{display:flex;gap:18px;align-items:flex-start}
 .map-wrap{position:relative;flex:1;min-width:0;background:#c9b889;border:10px solid #4c3b25;border-radius:8px;box-shadow:0 12px 35px #0008;overflow:hidden;line-height:0}
 .map-image{display:block;width:100%;height:auto}
 .map-overlay{position:absolute;inset:0;width:100%;height:100%;display:block}
 
-/* Styly bodů na mapě a animace skrytí */
+/* Bod na mapě */
 .point{cursor:pointer;transition:opacity .2s ease}.point circle{fill:#8f3f32;stroke:#f8e8bd;stroke-width:3}.point:hover circle,.point:focus circle,.point.is-active circle{fill:#c99d4a}.point:hover text,.point:focus text,.point.is-active text{fill:#f2c45f}.point text{pointer-events:none;fill:#fff;font-size:17px;font-weight:bold;paint-order:stroke;stroke:#111;stroke-width:4px;stroke-linejoin:round}.castle-icon{fill:#8f3f32;stroke:#f8e8bd;stroke-width:2}.point.castle:hover .castle-icon,.point.castle:focus .castle-icon,.point.castle.is-active .castle-icon{fill:#c99d4a}.point.castle:hover text,.point.castle:focus text,.point.castle.is-active text{fill:#8f3f32}
 
-/* Třída pro skrytí všech značek (zobrazí se jen .is-active při hoveru) */
+/* Třída pro skrytí všech značek přepínačem */
 .map-overlay.hide-all .point{opacity:0;pointer-events:none}
 .map-overlay.hide-all .point.is-active{opacity:1}
 
-/* Kontejner pro menu a záložky */
-.menu-container{width:260px;flex-shrink:0;position:relative;align-self:stretch}
+/* Kontejner pro menu a záložky - Původní rozměry */
+.menu-container{width:260px;flex-shrink:0;position:relative;align-self:stretch;min-height:500px}
 .location-menu{position:absolute;inset:0;background:var(--panel);border:1px solid #493f31;border-radius:8px;padding:16px;display:flex;flex-direction:column}
 
-/* Styl přepínače zobrazení */
+/* Přepínač zobrazení */
 .map-toggle{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #332b21;user-select:none;cursor:pointer}
 .map-toggle input{accent-color:var(--gold);cursor:pointer}
 
-/* Styly záložek (Tabs) */
+/* Záložky */
 .tab-nav{display:flex;gap:4px;margin-bottom:12px;border-bottom:1px solid #493f31;padding-bottom:8px;flex-shrink:0}
 .tab-btn{background:transparent;border:none;color:var(--muted);font-family:inherit;font-size:.95rem;font-weight:bold;padding:6px 10px;cursor:pointer;border-radius:4px;transition:all .15s}
 .tab-btn:hover{color:#e8dcc4;background:#2a251e}
@@ -43,27 +43,25 @@ main{max-width:1300px;margin:auto;padding:24px}
 
 .location-menu ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;overflow-y:auto;flex:1}
 
-/* Vzhled posuvníku */
 .location-menu ul::-webkit-scrollbar{width:6px}
 .location-menu ul::-webkit-scrollbar-track{background:#1a1713;border-radius:4px}
 .location-menu ul::-webkit-scrollbar-thumb{background:#493f31;border-radius:4px}
 .location-menu ul::-webkit-scrollbar-thumb:hover{background:#8d6b35}
 
-.location-menu a{display:block;padding:8px 10px;border-radius:5px;color:#e8dcc4;text-decoration:none;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}.location-menu a:hover,.location-menu a:focus,.location-menu a.is-active{background:#3a3021;color:#f2c45f;border-color:#8d6b35;outline:none}.location-menu a .kind{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}.legend{display:flex;gap:18px;flex-wrap:wrap;padding:14px 2px;color:var(--muted);font-size:.92rem}.info{margin-top:25px;display:grid;grid-template-columns:1.3fr .7fr;gap:20px}.card{background:var(--panel);border:1px solid #493f31;border-radius:8px;padding:20px}.card h2{margin-top:0;color:#e7c980}.card a{color:#e7c980}.note{color:#bfb4a0;line-height:1.6}
+.location-menu a{display:block;padding:8px 10px;border-radius:5px;color:#e8dcc4;text-decoration:none;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}.location-menu a:hover,.location-menu a:focus,.location-menu a.is-active{background:#3a3021;color:#f2c45f;border-color:#8d6b35;outline:none}.location-menu a .kind{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}.legend{display:flex;gap:18px;flex-wrap:wrap;padding:14px 2px;color:var(--muted);font-size:.92rem}
 
 @media(max-width:800px){
   .map-layout{flex-direction:column}
-  .menu-container{width:100%;height:auto}
+  .menu-container{width:100%;height:auto;min-height:0}
   .location-menu{position:static;inset:auto}
   .location-menu ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow-y:visible}
-  .info{grid-template-columns:1fr}
   .point text{font-size:15px}
 }
 @media(max-width:460px){.location-menu ul{grid-template-columns:1fr}main{padding:14px}}
 </style>
 </head>
 <body>
-<header><h1>Lokace</h1><div class="subtitle">Interaktivní historická mapa sídel členů hradeckého dvora Elišky Rejčky.</div></header>
+<header><h1>Lokace</h1><div class="subtitle">České země ve 13.–14. století · interaktivní historická mapa</div></header>
 <main>
 <div class="map-layout">
   <section class="map-wrap" id="mapWrap">
@@ -88,8 +86,6 @@ main{max-width:1300px;margin:auto;padding:24px}
 
   <div class="menu-container">
     <aside class="location-menu" aria-label="Seznam lokalit a družin">
-      
-      <!-- Přepínač pro skrytí bodů -->
       <label class="map-toggle">
         <input type="checkbox" id="hideMapMarkers">
         <span>Skrýt značky na mapě</span>
@@ -100,12 +96,10 @@ main{max-width:1300px;margin:auto;padding:24px}
         <button class="tab-btn" data-tab="tab-retinues">Družiny</button>
       </nav>
 
-      <!-- Záložka 1: Města a hrady -->
       <div id="tab-locations" class="tab-content is-active">
         <ul id="locationList"></ul>
       </div>
 
-      <!-- Záložka 2: Družiny -->
       <div id="tab-retinues" class="tab-content">
         <ul id="retinueList">
           <li>
@@ -142,12 +136,10 @@ const locationList = document.getElementById('locationList');
 const mapOverlay = document.querySelector('.map-overlay');
 const hideMapMarkers = document.getElementById('hideMapMarkers');
 
-// Obsluha přepínače zobrazení značek
 hideMapMarkers.addEventListener('change', (e) => {
   mapOverlay.classList.toggle('hide-all', e.target.checked);
 });
 
-// Přepínání záložek
 const tabBtns = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
 
@@ -161,7 +153,6 @@ tabBtns.forEach(btn => {
   });
 });
 
-// Pomocná funkce pro aktivaci lokalit na mapě
 function setPointsActive(namesArray, active) {
   namesArray.forEach(name => {
     const trimmedName = name.trim();
@@ -180,7 +171,6 @@ function setActiveLocation(name, active) {
   }
 }
 
-// 1. Generování a obsluha menu "Města a hrady"
 points.sort((a, b) => a.dataset.name.localeCompare(b.dataset.name, 'cs'));
 
 points.forEach(p => {
@@ -212,7 +202,6 @@ points.forEach(p => {
   });
 });
 
-// 2. Obsluha menu "Družiny"
 const retinueLinks = document.querySelectorAll('#retinueList a');
 
 retinueLinks.forEach(link => {
@@ -230,7 +219,6 @@ retinueLinks.forEach(link => {
   link.addEventListener('focus', () => handleHover(true));
   link.addEventListener('blur', () => handleHover(false));
   
-  // Po kliknutí se nic nestane
   link.addEventListener('click', e => e.preventDefault());
 });
 </script>
