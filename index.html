@@ -85,9 +85,9 @@ main{max-width:1300px;margin:auto;padding:24px}
     <img class="map-image" src="assets/mapa.png" alt="Mapa českých zemí s vyznačenými městy a hrady">
     <svg class="map-overlay" viewBox="0 0 1693 905" preserveAspectRatio="none" aria-label="Interaktivní vrstva mapy">
       <g class="point" data-name="Praha" data-type="město" tabindex="0" aria-label="Praha, město"><circle cx="558" cy="403" r="10"/><text x="575" y="397">Praha</text></g>
-      <g class="point" data-name="Jaroměř" data-type="město" tabindex="0" aria-label="Jaroměř, město"><circle cx="823" cy="320" r="10"/><text x="840" y="314">Jaroměř</text></g>
+      <g class="point" data-name="Jaroměř" data-type="město" tabindex="0" aria-label="Jaroměř, město"><circle cx="823" cy="320" r="10"/><text x="730" y="314">Jaroměř</text></g>
       <g class="point" data-name="Hradec Králové" data-type="město" tabindex="0" aria-label="Hradec Králové, město"><circle cx="810" cy="365" r="10"/><text x="827" y="359">Hradec Králové</text></g>
-      <g class="point" data-name="Chrudim" data-type="město" tabindex="0" aria-label="Chrudim, město"><circle cx="808" cy="437" r="10"/><text x="715" y="415">Chrudim</text></g>
+      <g class="point" data-name="Chrudim" data-type="město" tabindex="0" aria-label="Chrudim, město"><circle cx="808" cy="437" r="10"/><text x="715" y="420">Chrudim</text></g>
       <g class="point" data-name="Vysoké Mýto" data-type="město" tabindex="0" aria-label="Vysoké Mýto, město"><circle cx="868" cy="437" r="10"/><text x="885" y="431">Vysoké Mýto</text></g>
       <g class="point" data-name="Polička" data-type="město" tabindex="0" aria-label="Polička, město"><circle cx="887" cy="502" r="10"/><text x="904" y="496">Polička</text></g>
       <g class="point" data-name="Olomouc" data-type="město" tabindex="0" aria-label="Olomouc, město"><circle cx="1065" cy="538" r="10"/><text x="1082" y="532">Olomouc</text></g>
@@ -100,9 +100,13 @@ main{max-width:1300px;margin:auto;padding:24px}
     d="M751 480 H767 V478 H765 V473 H767 V468 H765 V466 H766 V460 H763 V464 H760 V460 H757 V464 H754 V460 H752 V466 H753 V468 H751 V473 H753 V478 H751 Z" /><text x="743" y="480" text-anchor="end">Žleby</text></g>
       <g class="point castle" data-name="Rysov" data-type="hrad" data-link="mista/rysov.html" tabindex="0" aria-label="Rysov, hrad"><path class="castle-icon"
     d="M915 610 H931 V608 H929 V603 H931 V598 H929 V596 H930 V590 H927 V594 H924 V590 H921 V594 H918 V590 H916 V596 H917 V598 H915 V603 H917 V608 H915 Z" /><text x="907" y="610" text-anchor="end">Rysov</text></g>
-     <g class="point castle" data-name="Ľúpča" data-type="hrad" data-link="mista/lupca.html" tabindex="0" aria-label="Ľúpča, hrad"><path class="castle-icon"
+      <g class="point castle" data-name="Ľúpča" data-type="hrad" data-link="mista/lupca.html" tabindex="0" aria-label="Ľúpča, hrad"><path class="castle-icon"
     d="M1420 770 H1436 V768 H1434 V763 H1436 V758 H1434 V756 H1435 V750 H1432 V754 H1429 V750 H1426 V754 H1423 V750 H1421 V756 H1422 V758 H1420 V763 H1422 V768 H1420 Z" /><text x="1446" y="770">Ľúpča</text></g>
-     <g class="point" data-name="Radvaň" data-type="město" tabindex="0" aria-label="Radvaň, město"><circle cx="1410" cy="780" r="10"/><text x="1320" y="780">Radvaň</text></g>
+<g class="point castle" data-name="Frymburk" data-type="hrad" data-link="mista/frymburk.html" tabindex="0" aria-label="Frymburk, hrad">
+  <path class="castle-icon" d="M890 330 H906 V328 H904 V323 H906 V318 H904 V316 H905 V310 H902 V314 H899 V310 H896 V314 H893 V310 H891 V316 H892 V318 H890 V323 H892 V328 H890 Z" />
+  <text x="916" y="330">Frymburk</text>
+</g>
+      <g class="point" data-name="Radvaň" data-type="město" tabindex="0" aria-label="Radvaň, město"><circle cx="1410" cy="780" r="10"/><text x="1320" y="780">Radvaň</text></g>
     </svg>
   </section>
 
@@ -165,7 +169,7 @@ main{max-width:1300px;margin:auto;padding:24px}
             </a>
           </li>
           <li>
-            <a href="#">
+            <a href="#" data-targets="Frymburk, Hradec Králové">
               <img src="assets/posadow-erb.png" alt="Erb Petr z Posadowa" class="retinue-icon">
               <span class="retinue-info">
                 Petr z Posadowa<span class="kind">Stolník hradeckého dvora</span>
