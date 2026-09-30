@@ -17,7 +17,11 @@ main{max-width:1300px;margin:auto;padding:24px}
 .map-overlay{position:absolute;inset:0;width:100%;height:100%;display:block}
 
 /* Bod na mapě */
-.point{cursor:pointer;transition:opacity .2s ease}.point circle{fill:#8f3f32;stroke:#f8e8bd;stroke-width:3}.point:hover circle,.point:focus circle,.point.is-active circle{fill:#c99d4a}.point:hover text,.point:focus text,.point.is-active text{fill:#f2c45f}.point text{pointer-events:none;fill:#fff;font-size:17px;font-weight:bold;paint-order:stroke;stroke:#111;stroke-width:4px;stroke-linejoin:round}.castle-icon{fill:#8f3f32;stroke:#f8e8bd;stroke-width:2}.point.castle:hover .castle-icon,.point.castle:focus .castle-icon,.point.castle.is-active .castle-icon{fill:#c99d4a}.point.castle:hover text,.point.castle:focus text,.point.castle.is-active text{fill:#8f3f32}
+.point{cursor:pointer;transition:opacity .2s ease}.point circle{fill:#8f3f32;stroke:#f8e8bd;stroke-width:3}.point:hover circle,.point:focus circle,.point.is-active circle{fill:#c99d4a}
+.point text{pointer-events:none;fill:#fff;font-size:17px;font-weight:bold;paint-order:stroke;stroke:#111;stroke-width:4px;stroke-linejoin:round;transition:font-size .2s ease, fill .2s ease}.castle-icon{fill:#8f3f32;stroke:#f8e8bd;stroke-width:2}.point.castle:hover .castle-icon,.point.castle:focus .castle-icon,.point.castle.is-active .castle-icon{fill:#c99d4a}
+
+/* Úprava pro všechny body (města i hrady) při najetí: světlejší barva a font zvětšený o 50 % */
+.point:hover text,.point:focus text,.point.is-active text{fill:#ff0;font-size:150%}
 
 /* Třída pro skrytí všech značek přepínačem */
 .map-overlay.hide-all .point{opacity:0;pointer-events:none}
@@ -84,14 +88,14 @@ main{max-width:1300px;margin:auto;padding:24px}
   <section class="map-wrap" id="mapWrap">
     <img class="map-image" src="assets/mapa.png" alt="Mapa českých zemí s vyznačenými městy a hrady">
     <svg class="map-overlay" viewBox="0 0 1693 905" preserveAspectRatio="none" aria-label="Interaktivní vrstva mapy">
-      <g class="point" data-name="Praha" data-type="město" tabindex="0" aria-label="Praha, město"><circle cx="558" cy="403" r="10"/><text x="575" y="397">Praha</text></g>
-      <g class="point" data-name="Jaroměř" data-type="město" tabindex="0" aria-label="Jaroměř, město"><circle cx="823" cy="320" r="10"/><text x="730" y="314">Jaroměř</text></g>
-      <g class="point" data-name="Hradec Králové" data-type="město" tabindex="0" aria-label="Hradec Králové, město"><circle cx="810" cy="365" r="10"/><text x="827" y="359">Hradec Králové</text></g>
-      <g class="point" data-name="Chrudim" data-type="město" tabindex="0" aria-label="Chrudim, město"><circle cx="808" cy="437" r="10"/><text x="715" y="420">Chrudim</text></g>
-      <g class="point" data-name="Vysoké Mýto" data-type="město" tabindex="0" aria-label="Vysoké Mýto, město"><circle cx="868" cy="437" r="10"/><text x="885" y="431">Vysoké Mýto</text></g>
-      <g class="point" data-name="Polička" data-type="město" tabindex="0" aria-label="Polička, město"><circle cx="887" cy="502" r="10"/><text x="904" y="496">Polička</text></g>
-      <g class="point" data-name="Olomouc" data-type="město" tabindex="0" aria-label="Olomouc, město"><circle cx="1065" cy="538" r="10"/><text x="1082" y="532">Olomouc</text></g>
-      <g class="point" data-name="Brno" data-type="město" tabindex="0" aria-label="Brno, město"><circle cx="949" cy="649" r="10"/><text x="966" y="643">Brno</text></g>
+      <g class="point" data-name="Praha" data-type="město" tabindex="0" aria-label="Praha, město"><circle cx="558" cy="403" r="10"/><text x="575" y="403">Praha</text></g>
+      <g class="point" data-name="Jaroměř" data-type="město" tabindex="0" aria-label="Jaroměř, město"><circle cx="823" cy="320" r="10"/><text x="803" y="320" text-anchor="end">Jaroměř</text></g>
+      <g class="point" data-name="Hradec Králové" data-type="město" tabindex="0" aria-label="Hradec Králové, město"><circle cx="810" cy="365" r="10"/><text x="827" y="365">Hradec Králové</text></g>
+      <g class="point" data-name="Chrudim" data-type="město" tabindex="0" aria-label="Chrudim, město"><circle cx="808" cy="437" r="10"/><text x="788" y="437" text-anchor="end">Chrudim</text></g>
+      <g class="point" data-name="Vysoké Mýto" data-type="město" tabindex="0" aria-label="Vysoké Mýto, město"><circle cx="868" cy="437" r="10"/><text x="885" y="437">Vysoké Mýto</text></g>
+      <g class="point" data-name="Polička" data-type="město" tabindex="0" aria-label="Polička, město"><circle cx="887" cy="502" r="10"/><text x="904" y="502">Polička</text></g>
+      <g class="point" data-name="Olomouc" data-type="město" tabindex="0" aria-label="Olomouc, město"><circle cx="1065" cy="538" r="10"/><text x="1082" y="538">Olomouc</text></g>
+      <g class="point" data-name="Brno" data-type="město" tabindex="0" aria-label="Brno, město"><circle cx="949" cy="649" r="10"/><text x="966" y="649">Brno</text></g>
       <g class="point castle" data-name="Rabštejn" data-type="hrad" data-link="mista/rabstejn.html" tabindex="0" aria-label="Rabštejn, hrad"><path class="castle-icon"
     d="M360 405 H376 V403 H374 V398 H376 V393 H374 V391 H375 V385 H372 V389 H369 V385 H366 V389 H363 V385 H361 V391 H362 V393 H360 V398 H362 V403 H360 Z" /><text x="352" y="405" text-anchor="end">Rabštejn</text></g>
       <g class="point castle" data-name="Lichtenburk (Lichnice)" data-type="hrad" data-link="mista/lichtenburk.html" tabindex="0" aria-label="Lichtenburk, hrad"><path class="castle-icon"
@@ -103,10 +107,10 @@ main{max-width:1300px;margin:auto;padding:24px}
       <g class="point castle" data-name="Ľúpča" data-type="hrad" data-link="mista/lupca.html" tabindex="0" aria-label="Ľúpča, hrad"><path class="castle-icon"
     d="M1420 770 H1436 V768 H1434 V763 H1436 V758 H1434 V756 H1435 V750 H1432 V754 H1429 V750 H1426 V754 H1423 V750 H1421 V756 H1422 V758 H1420 V763 H1422 V768 H1420 Z" /><text x="1446" y="770">Ľúpča</text></g>
 <g class="point castle" data-name="Frymburk" data-type="hrad" data-link="mista/frymburk.html" tabindex="0" aria-label="Frymburk, hrad">
-  <path class="castle-icon" d="M890 330 H906 V328 H904 V323 H906 V318 H904 V316 H905 V310 H902 V314 H899 V310 H896 V314 H893 V310 H891 V316 H892 V318 H890 V323 H892 V328 H890 Z" />
+  <path class="castle-icon" d="M890 330 H906 V328 H904 V323 H906 V318 H904 V316 H905 V310 H902 V314 H899 V310 H896 V314 H893 V310 H891 V316 H892 V318 H890 Z" />
   <text x="916" y="330">Frymburk</text>
 </g>
-      <g class="point" data-name="Radvaň" data-type="město" tabindex="0" aria-label="Radvaň, město"><circle cx="1410" cy="780" r="10"/><text x="1320" y="780">Radvaň</text></g>
+      <g class="point" data-name="Radvaň" data-type="město" tabindex="0" aria-label="Radvaň, město"><circle cx="1410" cy="780" r="10"/><text x="1390" y="780" text-anchor="end">Radvaň</text></g>
     </svg>
   </section>
 
