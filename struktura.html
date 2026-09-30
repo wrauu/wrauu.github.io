@@ -14,7 +14,7 @@
             --accent-red: #a82424;
             --gap-x: 12px;
             --gap-y: 40px;      /* Zvětšená hlavní mezera mezi řádky */
-            --gap-y-half: 20px; /* Poloviční mezera (mezi 1.-2. a 4.-5. řádkem) */
+            --gap-y-half: 20px; /* Poloviční mezera (mezi 1.-2., 4.-5. a 6.-7. řádkem) */
         }
 
         * {
@@ -67,9 +67,9 @@
                 46px var(--gap-y-half) /* 1. řádek -> poloviční mezera (20px) */
                 46px var(--gap-y)      /* 2. řádek -> zvětšená mezera (40px) */
                 46px var(--gap-y)      /* 3. řádek -> zvětšená mezera (40px) */
-                46px var(--gap-y-half) /* 4. řádek -> poloviční mezera (20px) */
+                46px var(--gap-y-half) /* 4. řádek -> poloviční mezera (20px) - maršálek / podmaršálek */
                 46px var(--gap-y)      /* 5. řádek -> zvětšená mezera (40px) */
-                46px var(--gap-y)      /* 6. řádek -> zvětšená mezera (40px) */
+                46px var(--gap-y-half) /* 6. řádek -> poloviční mezera (20px) - purkrabí / rychtáři */
                 46px;                  /* 7. řádek */
             column-gap: var(--gap-x);
             row-gap: 0;
@@ -77,6 +77,24 @@
             justify-items: center;
             align-items: center;
             position: relative;
+        }
+
+        /* SVG vrstva pro propojovací čáry */
+        .connections-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .connections-layer path {
+            fill: none;
+            stroke: #8b7355;
+            stroke-width: 2;
+            stroke-dasharray: 4 2;
         }
 
         /* Kartičky postav (výška 46px) */
@@ -92,6 +110,7 @@
             transition: transform 0.2s, border-color 0.2s;
             position: relative;
             user-select: none;
+            z-index: 2;
             
             width: 170px;
             height: 46px;
@@ -245,14 +264,27 @@
             <p>Interaktivní přehled struktury dvora</p>
         </header>
 
-        <div class="court-grid">
+        <div class="court-grid" id="courtGrid">
+            <!-- SVG vrstva pro propojení -->
+            <svg class="connections-layer" id="svgLayer">
+                <path id="line-queen-commander" />
+                <path id="line-commander-marshal" />
+                <path id="line-commander-burgraves" />
+                <path id="line-marshal-submarshal" />
+                <path id="line-burgrave-reeve-1" />
+                <path id="line-burgrave-reeve-2" />
+                <path id="line-burgrave-reeve-3" />
+                <path id="line-burgrave-reeve-4" />
+                <path id="line-burgrave-reeve-5" />
+            </svg>
+
             <!-- ŘÁDEK 1 (grid-row: 1) -->
             <div class="card" style="grid-row: 1;" onclick="showDetail('Arnošt Hradecký', 'Lékař', 'Osobní lékař královské rodiny.')">
                 <div class="role">Lékař</div><div class="name">Arnošt Hradecký</div>
             </div>
             <div class="empty-cell" style="grid-row: 1;"></div>
             <div class="empty-cell" style="grid-row: 1;"></div>
-            <div class="card icon-card" style="grid-row: 1;" onclick="showDetail('Královna Alžběta', 'Královna', 'Vládkyně dvora a celého království.')">
+            <div id="card-queen" class="card icon-card" style="grid-row: 1;" onclick="showDetail('Královna Alžběta', 'Královna', 'Vládkyně dvora a celého království.')">
                 <div class="card-icon">👑</div>
                 <div>
                     <div class="role">Královna</div>
@@ -276,15 +308,15 @@
 
             <!-- ŘÁDEK 3 (grid-row: 5) -->
             <div class="empty-cell" style="grid-row: 5;"></div>
-            <div class="card" style="grid-row: 5;" onclick="showDetail('Vznat z Lomnice', 'Velitel vojsk', 'Vrchní velitel vojsk.')">
+            <div id="card-commander" class="card" style="grid-row: 5;" onclick="showDetail('Vznat z Lomnice', 'Velitel vojsk', 'Vrchní velitel vojsk.')">
                 <div class="role">Velitel vojsk</div><div class="name">Vznat z Lomnice</div>
             </div>
             <div class="empty-cell" style="grid-row: 5;"></div>
             <div class="card" style="grid-row: 5;" onclick="showDetail('opat Hroznata', 'Kancléř', 'Královský kancléř a správce kanceláře.')">
                 <div class="role">Kancléř</div><div class="name">opat Hroznata</div>
             </div>
-            <div class="card" style="grid-row: 5;" onclick="showDetail('Jošt ze Štěkně', 'Hofmistr', 'Správce dvora a nadřízený dvorních úředníků.')">
-                <div class="role">Hofmistr</div><div class="name">Jošt ze Štěkně</div>
+            <div class="card" style="grid-row: 5;" onclick="showDetail('Jošt ze Štěkné', 'Hofmistr', 'Správce dvora a nadřízený dvorních úředníků.')">
+                <div class="role">Hofmistr</div><div class="name">Jošt ze Štěkné</div>
             </div>
             <div class="card" style="grid-row: 5;" onclick="showDetail('Dobrohost z Ronšperka', 'Komoří', 'Správce komor a financí.')">
                 <div class="role">Komoří</div><div class="name">Dobrohost z Ronšperka</div>
@@ -292,7 +324,7 @@
             <div class="empty-cell" style="grid-row: 5;"></div>
 
             <!-- ŘÁDEK 4 (grid-row: 7) -->
-            <div class="card disabled" style="grid-row: 7;">
+            <div id="card-marshal" class="card disabled" style="grid-row: 7;">
                 <div class="role">Maršálek</div><div class="name">—</div>
             </div>
             <div class="empty-cell" style="grid-row: 7;"></div>
@@ -313,7 +345,7 @@
             </div>
 
             <!-- ŘÁDEK 5 (grid-row: 9) -->
-            <div class="card" style="grid-row: 9;" onclick="showDetail('Martin z Bílé', 'Podmaršálek', 'Zástupce maršálka podřízený veliteli vojsk.')">
+            <div id="card-submarshal" class="card" style="grid-row: 9;" onclick="showDetail('Martin z Bílé', 'Podmaršálek', 'Zástupce maršálka podřízený veliteli vojsk.')">
                 <div class="role">Podmaršálek</div><div class="name">Martin z Bílé</div>
             </div>
             <div class="empty-cell" style="grid-row: 9;"></div>
@@ -329,41 +361,41 @@
 
             <!-- ŘÁDEK 6 (grid-row: 11) -->
             <div class="empty-cell" style="grid-row: 11;"></div>
-            <div class="card" style="grid-row: 11;" onclick="showDetail('Macek z Nasavrk', 'Purkrabí Hradecký', 'Purkrabí v Hradci Králové.')">
+            <div id="card-burgrave-hradec" class="card" style="grid-row: 11;" onclick="showDetail('Macek z Nasavrk', 'Purkrabí Hradecký', 'Purkrabí v Hradci Králové.')">
                 <div class="role">Purkrabí Hradecký</div><div class="name">Macek z Nasavrk</div>
             </div>
-            <div class="card" style="grid-row: 11;" onclick="showDetail('Vznat z Lomnice', 'Purkrabí Chrudimský', 'Purkrabí v Chrudimi a velitel vojsk.')">
+            <div id="card-burgrave-chrudim" class="card" style="grid-row: 11;" onclick="showDetail('Vznat z Lomnice', 'Purkrabí Chrudimský', 'Purkrabí v Chrudimi a velitel vojsk.')">
                 <div class="role">Purkrabí Chrudimský</div><div class="name">Vznat z Lomnice</div>
             </div>
-            <div class="card" style="grid-row: 11;" onclick="showDetail('Jiří z Rabštejna', 'Purkrabí Jaroměřský', 'Purkrabí v Jaroměři.')">
+            <div id="card-burgrave-jaromer" class="card" style="grid-row: 11;" onclick="showDetail('Jiří z Rabštejna', 'Purkrabí Jaroměřský', 'Purkrabí v Jaroměři.')">
                 <div class="role">Purkrabí Jaroměřský</div><div class="name">Jiří z Rabštejna</div>
             </div>
-            <div class="card disabled" style="grid-row: 11;">
+            <div id="card-burgrave-policka" class="card disabled" style="grid-row: 11;">
                 <div class="role">Purkrabí Poličský</div><div class="name">—</div>
             </div>
-            <div class="card disabled" style="grid-row: 11;">
+            <div id="card-burgrave-myto" class="card disabled" style="grid-row: 11;">
                 <div class="role">Purkrabí Mýtský</div><div class="name">—</div>
             </div>
             <div class="empty-cell" style="grid-row: 11;"></div>
 
             <!-- ŘÁDEK 7 (grid-row: 13) -->
             <div class="empty-cell" style="grid-row: 13;"></div>
-            <div class="card" style="grid-row: 13;" onclick="showDetail('Jakub řečený ze Švestky', 'Rychtář Hradecký', 'Správce spravedlnosti v Hradci.')">
+            <div id="card-reeve-hradec" class="card" style="grid-row: 13;" onclick="showDetail('Jakub řečený ze Švestky', 'Rychtář Hradecký', 'Správce spravedlnosti v Hradci.')">
                 <div class="role">Rychtář Hradecký</div><div class="name">Jakub ř. ze Švestky</div>
             </div>
 
-            <div class="card" style="grid-row: 13;" onclick="showDetail('Jindřich Lomnický', 'Rychtář Chrudimský', 'Správce spravedlnosti v Chrudimi.')">
+            <div id="card-reeve-chrudim" class="card" style="grid-row: 13;" onclick="showDetail('Jindřich Lomnický', 'Rychtář Chrudimský', 'Správce spravedlnosti v Chrudimi.')">
                 <div class="role">Rychtář Chrudimský</div><div class="name">Jindřich Lomnický</div>
             </div>
 
-            <div class="card" style="grid-row: 13;" onclick="showDetail('Richard řečený z Rysova', 'Rychtář Jaroměřský', 'Správce v Jaroměři.')">
+            <div id="card-reeve-jaromer" class="card" style="grid-row: 13;" onclick="showDetail('Richard řečený z Rysova', 'Rychtář Jaroměřský', 'Správce v Jaroměři.')">
                 <div class="role">Rychtář Jaroměřský</div><div class="name">Richard ř. z Rysova</div>
             </div>
 
-            <div class="card disabled" style="grid-row: 13;">
+            <div id="card-reeve-policka" class="card disabled" style="grid-row: 13;">
                 <div class="role">Rychtář Poličský</div><div class="name">—</div>
             </div>
-            <div class="card disabled" style="grid-row: 13;">
+            <div id="card-reeve-myto" class="card disabled" style="grid-row: 13;">
                 <div class="role">Rychtář Mýtský</div><div class="name">—</div>
             </div>
             <div class="empty-cell" style="grid-row: 13;"></div>
@@ -387,6 +419,85 @@
     </main>
 
     <script>
+        function drawLines() {
+            const grid = document.getElementById('courtGrid');
+            const gridRect = grid.getBoundingClientRect();
+
+            const getCoords = (id) => {
+                const el = document.getElementById(id).getBoundingClientRect();
+                return {
+                    left: el.left - gridRect.left,
+                    right: el.right - gridRect.left,
+                    top: el.top - gridRect.top,
+                    bottom: el.bottom - gridRect.top,
+                    centerX: el.left + el.width / 2 - gridRect.left,
+                    centerY: el.top + el.height / 2 - gridRect.top
+                };
+            };
+
+            const queen = getCoords('card-queen');
+            const commander = getCoords('card-commander');
+            const marshal = getCoords('card-marshal');
+            const submarshal = getCoords('card-submarshal');
+            
+            const burgraveHradec = getCoords('card-burgrave-hradec');
+            const burgraveChrudim = getCoords('card-burgrave-chrudim');
+            const burgraveJaromer = getCoords('card-burgrave-jaromer');
+            const burgravePolicka = getCoords('card-burgrave-policka');
+            const burgraveMyto = getCoords('card-burgrave-myto');
+
+            const reeveHradec = getCoords('card-reeve-hradec');
+            const reeveChrudim = getCoords('card-reeve-chrudim');
+            const reeveJaromer = getCoords('card-reeve-jaromer');
+            const reevePolicka = getCoords('card-reeve-policka');
+            const reeveMyto = getCoords('card-reeve-myto');
+
+            // 1. Královna -> Velitel vojsk
+            const midY1 = queen.bottom + (commander.top - queen.bottom) / 2;
+            const pathQueenCommander = `M ${queen.centerX} ${queen.bottom} L ${queen.centerX} ${midY1} L ${commander.centerX} ${midY1} L ${commander.centerX} ${commander.top}`;
+            document.getElementById('line-queen-commander').setAttribute('d', pathQueenCommander);
+
+            // 2. Velitel vojsk -> Maršálek
+            const midY2 = commander.bottom + (marshal.top - commander.bottom) / 2;
+            const pathCommanderMarshal = `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midY2} L ${marshal.centerX} ${midY2} L ${marshal.centerX} ${marshal.top}`;
+            document.getElementById('line-commander-marshal').setAttribute('d', pathCommanderMarshal);
+
+            // 3. Velitel vojsk -> Všichni purkrabí (rozvětvení UPROSTŘED mezery mezi 5. a 6. řádkem)
+            const midGap56Y = submarshal.bottom + (burgraveHradec.top - submarshal.bottom) / 2;
+            const pathCommanderBurgraves = 
+                `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midGap56Y} ` +
+                `L ${burgraveHradec.centerX} ${midGap56Y} L ${burgraveHradec.centerX} ${burgraveHradec.top} ` +
+                `M ${commander.centerX} ${midGap56Y} L ${burgraveChrudim.centerX} ${midGap56Y} L ${burgraveChrudim.centerX} ${burgraveChrudim.top} ` +
+                `M ${commander.centerX} ${midGap56Y} L ${burgraveJaromer.centerX} ${midGap56Y} L ${burgraveJaromer.centerX} ${burgraveJaromer.top} ` +
+                `M ${commander.centerX} ${midGap56Y} L ${burgravePolicka.centerX} ${midGap56Y} L ${burgravePolicka.centerX} ${burgravePolicka.top} ` +
+                `M ${commander.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${burgraveMyto.top}`;
+            document.getElementById('line-commander-burgraves').setAttribute('d', pathCommanderBurgraves);
+
+            // 4. Maršálek -> Podmaršálek
+            const pathMarshalSubmarshal = `M ${marshal.centerX} ${marshal.bottom} L ${submarshal.centerX} ${submarshal.top}`;
+            document.getElementById('line-marshal-submarshal').setAttribute('d', pathMarshalSubmarshal);
+
+            // 5. Purkrabí Hradecký -> Rychtář Hradecký
+            const pathBurgraveReeve1 = `M ${burgraveHradec.centerX} ${burgraveHradec.bottom} L ${reeveHradec.centerX} ${reeveHradec.top}`;
+            document.getElementById('line-burgrave-reeve-1').setAttribute('d', pathBurgraveReeve1);
+
+            // 6. Purkrabí Chrudimský -> Rychtář Chrudimský
+            const pathBurgraveReeve2 = `M ${burgraveChrudim.centerX} ${burgraveChrudim.bottom} L ${reeveChrudim.centerX} ${reeveChrudim.top}`;
+            document.getElementById('line-burgrave-reeve-2').setAttribute('d', pathBurgraveReeve2);
+
+            // 7. Purkrabí Jaroměřský -> Rychtář Jaroměřský
+            const pathBurgraveReeve3 = `M ${burgraveJaromer.centerX} ${burgraveJaromer.bottom} L ${reeveJaromer.centerX} ${reeveJaromer.top}`;
+            document.getElementById('line-burgrave-reeve-3').setAttribute('d', pathBurgraveReeve3);
+
+            // 8. Purkrabí Poličský -> Rychtář Poličský
+            const pathBurgraveReeve4 = `M ${burgravePolicka.centerX} ${burgravePolicka.bottom} L ${reevePolicka.centerX} ${reevePolicka.top}`;
+            document.getElementById('line-burgrave-reeve-4').setAttribute('d', pathBurgraveReeve4);
+
+            // 9. Purkrabí Mýtský -> Rychtář Mýtský
+            const pathBurgraveReeve5 = `M ${burgraveMyto.centerX} ${burgraveMyto.bottom} L ${reeveMyto.centerX} ${reeveMyto.top}`;
+            document.getElementById('line-burgrave-reeve-5').setAttribute('d', pathBurgraveReeve5);
+        }
+
         function showDetail(name, role, desc) {
             document.getElementById('pop-name').innerText = name;
             document.getElementById('pop-role').innerText = role;
@@ -397,6 +508,9 @@
         function closeDetail() {
             document.getElementById('popover').classList.remove('active');
         }
+
+        window.addEventListener('load', drawLines);
+        window.addEventListener('resize', drawLines);
     </script>
 </body>
 </html>
