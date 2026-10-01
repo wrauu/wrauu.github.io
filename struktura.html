@@ -297,6 +297,7 @@
                     <path id="line-queen-doctor-confessor" />
                     <path id="line-queen-main-branch" />
                     <path id="line-queen-lady" />
+                    <path id="line-queen-captain" />
                     <path id="line-steward-officials" />
                     <path id="line-steward-lady" />
                     <path id="line-captain-sergeant" />
@@ -527,6 +528,14 @@
                 `L ${lady.centerX} ${queen.centerY} ` +
                 `L ${lady.centerX} ${lady.top}`;
             document.getElementById('line-queen-lady').setAttribute('d', pathQueenLady);
+
+            // 2c. Čára od Královny k Hejtmanovi král. stráže
+            const pathQueenCaptain = 
+                `M ${queen.centerX} ${queen.bottom} ` +
+                `L ${queen.centerX} ${topBarY} ` +
+                `L ${captain.centerX} ${topBarY} ` +
+                `L ${captain.centerX} ${captain.top}`;
+            document.getElementById('line-queen-captain').setAttribute('d', pathQueenCaptain);
 
             // 3. Hofmistr -> Hejtman král. stráže, Lovčí, Stolník, Číšník
             const midBarY = steward.bottom + (captain.top - steward.bottom) / 2;
