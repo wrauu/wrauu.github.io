@@ -251,12 +251,6 @@
             color: #333;
         }
 
-        .popover-info {
-            font-size: 0.75rem;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
         .btn-more {
             display: block;
             width: 100%;
@@ -347,8 +341,8 @@
                     <div class="role">Velitel vojsk</div><div class="name">Vznat z Lomnice</div>
                 </div>
                 <div class="empty-cell" style="grid-row: 5;"></div>
-                <div id="card-chancellor" class="card" style="grid-row: 5;" onclick="showDetail('opat Hroznata', 'Kancléř', 'Královský kancléř a správce kanceláře.')">
-                    <div class="role">Kancléř</div><div class="name">opat Hroznata</div>
+                <div id="card-chancellor" class="card" style="grid-row: 5;" onclick="showDetail('Převor Hroznata', 'Kancléř', 'Královský kancléř a správce kanceláře.')">
+                    <div class="role">Kancléř</div><div class="name">Převor Hroznata</div>
                 </div>
                 <div id="card-steward" class="card" style="grid-row: 5;" onclick="showDetail('Jošt ze Štěkné', 'Hofmistr', 'Správce dvora a nadřízený dvorních úředníků.')">
                     <div class="role">Hofmistr</div><div class="name">Jošt ze Štěkné</div>
@@ -366,8 +360,8 @@
                 <div id="card-captain" class="card" style="grid-row: 7;" onclick="showDetail('Vladimír z Vildenberka', 'Hejtman král. stráže', 'Velitel královské stráže podřízený hofmistrovi a přímo královně.')">
                     <div class="role">Hejtman král. stráže</div><div class="name">Vladimír z Vildenberka</div>
                 </div>
-                <div id="card-huntsman" class="card" style="grid-row: 7;" onclick="showDetail('Svatopluk z Němčic', 'Lovčí', 'Správce královských honiteb a lovu.')">
-                    <div class="role">Lovčí</div><div class="name">Svatopluk z Němčic</div>
+                <div id="card-huntsman" class="card" style="grid-row: 7;" onclick="showDetail('Svatomír z Němčic', 'Lovčí', 'Správce královských honiteb a lovu.')">
+                    <div class="role">Lovčí</div><div class="name">Svatomír z Němčic</div>
                 </div>
                 <div id="card-steward-table" class="card" style="grid-row: 7;" onclick="showDetail('Petr z Posadowa', 'Stolník', 'Dohled nad zásobováním dvora, mlýny a sýpky.')">
                     <div class="role">Stolník</div><div class="name">Petr z Posadowa</div>
@@ -421,8 +415,8 @@
                     <div class="role">Rychtář Chrudimský</div><div class="name">Jindřich Lomnický</div>
                 </div>
 
-                <div id="card-reeve-jaromer" class="card" style="grid-row: 13;" onclick="showDetail('Richard řečený z Rysova', 'Rychtář Jaroměřský', 'Správce spravedlnosti v Jaroměři.')">
-                    <div class="role">Rychtář Jaroměřský</div><div class="name">Richard ř. z Rysova</div>
+                <div id="card-reeve-jaromer" class="card" style="grid-row: 13;" onclick="showDetail('Richard z Rysova', 'Rychtář Jaroměřský', 'Správce spravedlnosti v Jaroměři.')">
+                    <div class="role">Rychtář Jaroměřský</div><div class="name">Richard z Rysova</div>
                 </div>
 
                 <div id="card-reeve-policka" class="card disabled" style="grid-row: 13;">
@@ -445,167 +439,197 @@
                 </div>
             </div>
             <div id="pop-desc" class="popover-text"></div>
-            <div class="popover-info">Narozen: 1903.<br>Hvězda: 4/5</div>
-            <a href="#" class="btn-more">Zobrazit více</a>
+            <a href="#" id="pop-btn-more" class="btn-more" target="_blank" rel="noopener noreferrer">Zobrazit více</a>
             <button class="btn-close" onclick="closeDetail()">Zpět</button>
         </div>
     </main>
 
-    <script>
-        function drawLines() {
-            const grid = document.getElementById('courtGrid');
-            const gridRect = grid.getBoundingClientRect();
+<script>
+    // Mapa adres podstránek pro jednotlivé osoby/projekty
+    const personUrls = {
+        'Královna Alžběta': 'https://hradeckydvur.net/clenove/alzbeta-richenza/',
+        'Petr z Posadowa': 'https://hradeckydvur.net/clenove/petr-z-posadowa/',
+        'Dobrohost z Ronšperka': 'https://hradeckydvur.net/clenove/dobrohost-z-ronsperka/',
+        'Jiří z Rabštejna': 'https://hradeckydvur.net/clenove/jiri-z-rabstejna/',
+        'Vladimír z Vildenberka': 'https://hradeckydvur.net/clenove/vladimir-z-vildenberka/',
+        'Vznat z Lomnice': 'https://hradeckydvur.net/clenove/pani-z-lomnice-a-tasova/',
+        'Jan z Tasova': 'https://hradeckydvur.net/clenove/pani-z-lomnice-a-tasova/',
+        'Martin z Bílé': 'https://hradeckydvur.net/clenove/martin-z-bile/',
+        'Přemysl ze Zástřizl': 'https://hradeckydvur.net/clenove/zastrizlovi/',
+        'Mikuláš z Blatné': 'https://hradeckydvur.net/clenove/mikulas-z-blatne/',
+        'Jindřich Lomnický': 'https://hradeckydvur.net/clenove/jindrich-lomnicky/',
+        'Richard z Rysova': 'https://hradeckydvur.net/clenove/richard-z-rysova/',
+        'Jakub řečený ze Švestky': 'https://hradeckydvur.net/clenove/jitka-recena-ze-svestky/',
+        'Macek z Nasavrk': 'https://hradeckydvur.net/clenove/hradecky-purkrabi-macek-receny-mnich/',
+        'Převor Hroznata': 'https://hradeckydvur.net/clenove/prevor-hroznata/',
+        'Amát Hradecký': 'https://hradeckydvur.net/clenove/amat-hradecky/',
+        'Markéta z Doubravice': 'https://hradeckydvur.net/clenove/marketa-z-doubravice/',
+'Jošt ze Štěkně': 'https://hradeckydvur.net/clenove/jost-ze-stekne/',
+'Jan řečený Loupežník': 'https://hradeckydvur.net/clenove-a-projekty/',
+'Svatomír z Němčic': 'https://hradeckydvur.net/clenove/svatomir-z-nemcic/',
 
-            const getCoords = (id) => {
-                const el = document.getElementById(id).getBoundingClientRect();
-                return {
-                    left: el.left - gridRect.left,
-                    right: el.right - gridRect.left,
-                    top: el.top - gridRect.top,
-                    bottom: el.bottom - gridRect.top,
-                    centerX: el.left + el.width / 2 - gridRect.left,
-                    centerY: el.top + el.height / 2 - gridRect.top
-                };
+    };
+
+    const defaultUrl = 'https://hradeckydvur.net/clenove-a-projekty/';
+
+    function drawLines() {
+        const grid = document.getElementById('courtGrid');
+        const gridRect = grid.getBoundingClientRect();
+
+        const getCoords = (id) => {
+            const el = document.getElementById(id).getBoundingClientRect();
+            return {
+                left: el.left - gridRect.left,
+                right: el.right - gridRect.left,
+                top: el.top - gridRect.top,
+                bottom: el.bottom - gridRect.top,
+                centerX: el.left + el.width / 2 - gridRect.left,
+                centerY: el.top + el.height / 2 - gridRect.top
             };
+        };
 
-            const queen = getCoords('card-queen');
-            const doctor = getCoords('card-doctor');
-            const confessor = getCoords('card-confessor');
-            const commander = getCoords('card-commander');
-            const chancellor = getCoords('card-chancellor');
-            const steward = getCoords('card-steward');
-            const chamberlain = getCoords('card-chamberlain');
+        const queen = getCoords('card-queen');
+        const doctor = getCoords('card-doctor');
+        const confessor = getCoords('card-confessor');
+        const commander = getCoords('card-commander');
+        const chancellor = getCoords('card-chancellor');
+        const steward = getCoords('card-steward');
+        const chamberlain = getCoords('card-chamberlain');
 
-            const submarshal = getCoords('card-submarshal');
-            
-            const captain = getCoords('card-captain');
-            const huntsman = getCoords('card-huntsman');
-            const stewardTable = getCoords('card-steward-table');
-            const cupbearer = getCoords('card-cupbearer');
-            const lady = getCoords('card-lady');
+        const submarshal = getCoords('card-submarshal');
+        
+        const captain = getCoords('card-captain');
+        const huntsman = getCoords('card-huntsman');
+        const stewardTable = getCoords('card-steward-table');
+        const cupbearer = getCoords('card-cupbearer');
+        const lady = getCoords('card-lady');
 
-            const sergeant = getCoords('card-sergeant');
-            const carver = getCoords('card-carver');
+        const sergeant = getCoords('card-sergeant');
+        const carver = getCoords('card-carver');
 
-            const burgraveHradec = getCoords('card-burgrave-hradec');
-            const burgraveChrudim = getCoords('card-burgrave-chrudim');
-            const burgraveJaromer = getCoords('card-burgrave-jaromer');
-            const burgravePolicka = getCoords('card-burgrave-policka');
-            const burgraveMyto = getCoords('card-burgrave-myto');
+        const burgraveHradec = getCoords('card-burgrave-hradec');
+        const burgraveChrudim = getCoords('card-burgrave-chrudim');
+        const burgraveJaromer = getCoords('card-burgrave-jaromer');
+        const burgravePolicka = getCoords('card-burgrave-policka');
+        const burgraveMyto = getCoords('card-burgrave-myto');
 
-            const reeveHradec = getCoords('card-reeve-hradec');
-            const reeveChrudim = getCoords('card-reeve-chrudim');
-            const reeveJaromer = getCoords('card-reeve-jaromer');
-            const reevePolicka = getCoords('card-reeve-policka');
-            const reeveMyto = getCoords('card-reeve-myto');
+        const reeveHradec = getCoords('card-reeve-hradec');
+        const reeveChrudim = getCoords('card-reeve-chrudim');
+        const reeveJaromer = getCoords('card-reeve-jaromer');
+        const reevePolicka = getCoords('card-reeve-policka');
+        const reeveMyto = getCoords('card-reeve-myto');
 
-            // 1. Královna -> Lékař & Zpovědník
-            const docBranchX = doctor.right + 25;
-            const pathQueenDocConf = 
-                `M ${queen.left} ${queen.centerY} ` +
-                `L ${docBranchX} ${queen.centerY} ` +
-                `L ${docBranchX} ${doctor.centerY} L ${doctor.right} ${doctor.centerY} ` +
-                `M ${docBranchX} ${queen.centerY} ` +
-                `L ${docBranchX} ${confessor.centerY} L ${confessor.right} ${confessor.centerY}`;
-            document.getElementById('line-queen-doctor-confessor').setAttribute('d', pathQueenDocConf);
+        // 1. Královna -> Lékař & Zpovědník
+        const docBranchX = doctor.right + 25;
+        const pathQueenDocConf = 
+            `M ${queen.left} ${queen.centerY} ` +
+            `L ${docBranchX} ${queen.centerY} ` +
+            `L ${docBranchX} ${doctor.centerY} L ${doctor.right} ${doctor.centerY} ` +
+            `M ${docBranchX} ${queen.centerY} ` +
+            `L ${docBranchX} ${confessor.centerY} L ${confessor.right} ${confessor.centerY}`;
+        document.getElementById('line-queen-doctor-confessor').setAttribute('d', pathQueenDocConf);
 
-            // 2. Hlavní větev z Královny směrem dolů -> Velitel vojsk, Kancléř, Hofmistr, Komoří
-            const topBarY = queen.bottom + (commander.top - queen.bottom) / 2;
-            const pathQueenMainBranch = 
-                `M ${queen.centerX} ${queen.bottom} L ${queen.centerX} ${topBarY} ` +
-                `L ${commander.centerX} ${topBarY} L ${commander.centerX} ${commander.top} ` +
-                `M ${queen.centerX} ${topBarY} L ${chancellor.centerX} ${topBarY} L ${chancellor.centerX} ${chancellor.top} ` +
-                `M ${queen.centerX} ${topBarY} L ${steward.centerX} ${topBarY} L ${steward.centerX} ${steward.top} ` +
-                `M ${queen.centerX} ${topBarY} L ${chamberlain.centerX} ${topBarY} L ${chamberlain.centerX} ${chamberlain.top}`;
-            document.getElementById('line-queen-main-branch').setAttribute('d', pathQueenMainBranch);
+        // 2. Hlavní větev z Královny směrem dolů -> Velitel vojsk, Kancléř, Hofmistr, Komoří
+        const topBarY = queen.bottom + (commander.top - queen.bottom) / 2;
+        const pathQueenMainBranch = 
+            `M ${queen.centerX} ${queen.bottom} L ${queen.centerX} ${topBarY} ` +
+            `L ${commander.centerX} ${topBarY} L ${commander.centerX} ${commander.top} ` +
+            `M ${queen.centerX} ${topBarY} L ${chancellor.centerX} ${topBarY} L ${chancellor.centerX} ${chancellor.top} ` +
+            `M ${queen.centerX} ${topBarY} L ${steward.centerX} ${topBarY} L ${steward.centerX} ${steward.top} ` +
+            `M ${queen.centerX} ${topBarY} L ${chamberlain.centerX} ${topBarY} L ${chamberlain.centerX} ${chamberlain.top}`;
+        document.getElementById('line-queen-main-branch').setAttribute('d', pathQueenMainBranch);
 
-            // 2b. Čára od Královny vpravo a dolů ke Komorné
-            const pathQueenLady = 
-                `M ${queen.right} ${queen.centerY} ` +
-                `L ${lady.centerX} ${queen.centerY} ` +
-                `L ${lady.centerX} ${lady.top}`;
-            document.getElementById('line-queen-lady').setAttribute('d', pathQueenLady);
+        // 2b. Čára od Královny vpravo a dolů ke Komorné
+        const pathQueenLady = 
+            `M ${queen.right} ${queen.centerY} ` +
+            `L ${lady.centerX} ${queen.centerY} ` +
+            `L ${lady.centerX} ${lady.top}`;
+        document.getElementById('line-queen-lady').setAttribute('d', pathQueenLady);
 
-            // 2c. Čára od Královny k Hejtmanovi král. stráže
-            const pathQueenCaptain = 
-                `M ${queen.centerX} ${queen.bottom} ` +
-                `L ${queen.centerX} ${topBarY} ` +
-                `L ${captain.centerX} ${topBarY} ` +
-                `L ${captain.centerX} ${captain.top}`;
-            document.getElementById('line-queen-captain').setAttribute('d', pathQueenCaptain);
+        // 2c. Čára od Královny k Hejtmanovi král. stráže
+        const pathQueenCaptain = 
+            `M ${queen.centerX} ${queen.bottom} ` +
+            `L ${queen.centerX} ${topBarY} ` +
+            `L ${captain.centerX} ${topBarY} ` +
+            `L ${captain.centerX} ${captain.top}`;
+        document.getElementById('line-queen-captain').setAttribute('d', pathQueenCaptain);
 
-            // 3. Hofmistr -> Hejtman král. stráže, Lovčí, Stolník, Číšník
-            const midBarY = steward.bottom + (captain.top - steward.bottom) / 2;
-            const pathStewardOff = 
-                `M ${steward.centerX} ${steward.bottom} L ${steward.centerX} ${midBarY} ` +
-                `L ${captain.centerX} ${midBarY} L ${captain.centerX} ${captain.top} ` +
-                `M ${steward.centerX} ${midBarY} L ${huntsman.centerX} ${midBarY} L ${huntsman.centerX} ${huntsman.top} ` +
-                `M ${steward.centerX} ${midBarY} L ${stewardTable.centerX} ${midBarY} L ${stewardTable.centerX} ${stewardTable.top} ` +
-                `M ${steward.centerX} ${midBarY} L ${cupbearer.centerX} ${midBarY} L ${cupbearer.centerX} ${cupbearer.top}`;
-            document.getElementById('line-steward-officials').setAttribute('d', pathStewardOff);
+        // 3. Hofmistr -> Hejtman král. stráže, Lovčí, Stolník, Číšník
+        const midBarY = steward.bottom + (captain.top - steward.bottom) / 2;
+        const pathStewardOff = 
+            `M ${steward.centerX} ${steward.bottom} L ${steward.centerX} ${midBarY} ` +
+            `L ${captain.centerX} ${midBarY} L ${captain.centerX} ${captain.top} ` +
+            `M ${steward.centerX} ${midBarY} L ${huntsman.centerX} ${midBarY} L ${huntsman.centerX} ${huntsman.top} ` +
+            `M ${steward.centerX} ${midBarY} L ${stewardTable.centerX} ${midBarY} L ${stewardTable.centerX} ${stewardTable.top} ` +
+            `M ${steward.centerX} ${midBarY} L ${cupbearer.centerX} ${midBarY} L ${cupbearer.centerX} ${cupbearer.top}`;
+        document.getElementById('line-steward-officials').setAttribute('d', pathStewardOff);
 
-            // 3b. Hofmistr -> Komorná
-            const pathStewardLady = 
-                `M ${steward.centerX} ${steward.bottom} ` +
-                `L ${steward.centerX} ${midBarY} ` +
-                `L ${lady.centerX} ${midBarY} ` +
-                `L ${lady.centerX} ${lady.top}`;
-            document.getElementById('line-steward-lady').setAttribute('d', pathStewardLady);
+        // 3b. Hofmistr -> Komorná
+        const pathStewardLady = 
+            `M ${steward.centerX} ${steward.bottom} ` +
+            `L ${steward.centerX} ${midBarY} ` +
+            `L ${lady.centerX} ${midBarY} ` +
+            `L ${lady.centerX} ${lady.top}`;
+        document.getElementById('line-steward-lady').setAttribute('d', pathStewardLady);
 
-            // 4. Hejtman král. stráže -> Seržant král. stráže
-            document.getElementById('line-captain-sergeant').setAttribute('d', `M ${captain.centerX} ${captain.bottom} L ${sergeant.centerX} ${sergeant.top}`);
+        // 4. Hejtman král. stráže -> Seržant král. stráže
+        document.getElementById('line-captain-sergeant').setAttribute('d', `M ${captain.centerX} ${captain.bottom} L ${sergeant.centerX} ${sergeant.top}`);
 
-            // 5. Stolník -> Kráječ
-            document.getElementById('line-carver').setAttribute('d', `M ${stewardTable.centerX} ${stewardTable.bottom} L ${carver.centerX} ${carver.top}`);
+        // 5. Stolník -> Kráječ
+        document.getElementById('line-carver').setAttribute('d', `M ${stewardTable.centerX} ${stewardTable.bottom} L ${carver.centerX} ${carver.top}`);
 
-            // 6. Velitel vojsk -> Podmaršálek
-            const midY2 = commander.bottom + (submarshal.top - commander.bottom) / 2;
-            document.getElementById('line-commander-submarshal').setAttribute('d', `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midY2} L ${submarshal.centerX} ${midY2} L ${submarshal.centerX} ${submarshal.top}`);
+        // 6. Velitel vojsk -> Podmaršálek
+        const midY2 = commander.bottom + (submarshal.top - commander.bottom) / 2;
+        document.getElementById('line-commander-submarshal').setAttribute('d', `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midY2} L ${submarshal.centerX} ${midY2} L ${submarshal.centerX} ${submarshal.top}`);
 
-            // 7. Velitel vojsk -> Všichni purkrabí
-            const midGap56Y = sergeant.bottom + (burgraveHradec.top - sergeant.bottom) / 2;
-            const pathCommanderBurgraves = 
-                `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midGap56Y} ` +
-                `L ${burgraveHradec.centerX} ${midGap56Y} L ${burgraveHradec.centerX} ${burgraveHradec.top} ` +
-                `M ${commander.centerX} ${midGap56Y} L ${burgraveChrudim.centerX} ${midGap56Y} L ${burgraveChrudim.centerX} ${burgraveChrudim.top} ` +
-                `M ${commander.centerX} ${midGap56Y} L ${burgraveJaromer.centerX} ${midGap56Y} L ${burgraveJaromer.centerX} ${burgraveJaromer.top} ` +
-                `M ${commander.centerX} ${midGap56Y} L ${burgravePolicka.centerX} ${midGap56Y} L ${burgravePolicka.centerX} ${burgravePolicka.top} ` +
-                `M ${commander.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${burgraveMyto.top}`;
-            document.getElementById('line-commander-burgraves').setAttribute('d', pathCommanderBurgraves);
+        // 7. Velitel vojsk -> Všichni purkrabí
+        const midGap56Y = sergeant.bottom + (burgraveHradec.top - sergeant.bottom) / 2;
+        const pathCommanderBurgraves = 
+            `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midGap56Y} ` +
+            `L ${burgraveHradec.centerX} ${midGap56Y} L ${burgraveHradec.centerX} ${burgraveHradec.top} ` +
+            `M ${commander.centerX} ${midGap56Y} L ${burgraveChrudim.centerX} ${midGap56Y} L ${burgraveChrudim.centerX} ${burgraveChrudim.top} ` +
+            `M ${commander.centerX} ${midGap56Y} L ${burgraveJaromer.centerX} ${midGap56Y} L ${burgraveJaromer.centerX} ${burgraveJaromer.top} ` +
+            `M ${commander.centerX} ${midGap56Y} L ${burgravePolicka.centerX} ${midGap56Y} L ${burgravePolicka.centerX} ${burgravePolicka.top} ` +
+            `M ${commander.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${burgraveMyto.top}`;
+        document.getElementById('line-commander-burgraves').setAttribute('d', pathCommanderBurgraves);
 
-            // 7b. Hofmistr -> Purkrabí (svislá čára přesně v polovině mezi Hejtmanem a spojnicí Velitele vojsk)
-            const captainLeft = captain.left;
-            const commanderX = commander.centerX;
-            const lineX = commanderX + (captainLeft - commanderX) / 2;
+        // 7b. Hofmistr -> Purkrabí (svislá čára přesně v polovině mezi Hejtmanem a spojnicí Velitele vojsk)
+        const captainLeft = captain.left;
+        const commanderX = commander.centerX;
+        const lineX = commanderX + (captainLeft - commanderX) / 2;
 
-            const pathStewardBurgraves = 
-                `M ${steward.centerX} ${steward.bottom} ` +
-                `L ${steward.centerX} ${midBarY} ` +
-                `L ${lineX} ${midBarY} ` +
-                `L ${lineX} ${midGap56Y}`;
-            document.getElementById('line-steward-burgraves').setAttribute('d', pathStewardBurgraves);
+        const pathStewardBurgraves = 
+            `M ${steward.centerX} ${steward.bottom} ` +
+            `L ${steward.centerX} ${midBarY} ` +
+            `L ${lineX} ${midBarY} ` +
+            `L ${lineX} ${midGap56Y}`;
+        document.getElementById('line-steward-burgraves').setAttribute('d', pathStewardBurgraves);
 
-            // 8. Purkrabí -> Rychtáři
-            document.getElementById('line-burgrave-reeve-1').setAttribute('d', `M ${burgraveHradec.centerX} ${burgraveHradec.bottom} L ${reeveHradec.centerX} ${reeveHradec.top}`);
-            document.getElementById('line-burgrave-reeve-2').setAttribute('d', `M ${burgraveChrudim.centerX} ${burgraveChrudim.bottom} L ${reeveChrudim.centerX} ${reeveChrudim.top}`);
-            document.getElementById('line-burgrave-reeve-3').setAttribute('d', `M ${burgraveJaromer.centerX} ${burgraveJaromer.bottom} L ${reeveJaromer.centerX} ${reeveJaromer.top}`);
-            document.getElementById('line-burgrave-reeve-4').setAttribute('d', `M ${burgravePolicka.centerX} ${burgravePolicka.bottom} L ${reevePolicka.centerX} ${reevePolicka.top}`);
-            document.getElementById('line-burgrave-reeve-5').setAttribute('d', `M ${burgraveMyto.centerX} ${burgraveMyto.bottom} L ${reeveMyto.centerX} ${reeveMyto.top}`);
-        }
+        // 8. Purkrabí -> Rychtáři
+        document.getElementById('line-burgrave-reeve-1').setAttribute('d', `M ${burgraveHradec.centerX} ${burgraveHradec.bottom} L ${reeveHradec.centerX} ${reeveHradec.top}`);
+        document.getElementById('line-burgrave-reeve-2').setAttribute('d', `M ${burgraveChrudim.centerX} ${burgraveChrudim.bottom} L ${reeveChrudim.centerX} ${reeveChrudim.top}`);
+        document.getElementById('line-burgrave-reeve-3').setAttribute('d', `M ${burgraveJaromer.centerX} ${burgraveJaromer.bottom} L ${reeveJaromer.centerX} ${reeveJaromer.top}`);
+        document.getElementById('line-burgrave-reeve-4').setAttribute('d', `M ${burgravePolicka.centerX} ${burgravePolicka.bottom} L ${reevePolicka.centerX} ${reevePolicka.top}`);
+        document.getElementById('line-burgrave-reeve-5').setAttribute('d', `M ${burgraveMyto.centerX} ${burgraveMyto.bottom} L ${reeveMyto.centerX} ${reeveMyto.top}`);
+    }
 
-        function showDetail(name, role, desc) {
-            document.getElementById('pop-name').innerText = name;
-            document.getElementById('pop-role').innerText = role;
-            document.getElementById('pop-desc').innerText = desc;
-            document.getElementById('popover').classList.add('active');
-        }
+    function showDetail(name, role, desc) {
+        document.getElementById('pop-name').innerText = name;
+        document.getElementById('pop-role').innerText = role;
+        document.getElementById('pop-desc').innerText = desc;
+        
+        const btnMore = document.getElementById('pop-btn-more');
+        btnMore.href = personUrls[name] || defaultUrl;
 
-        function closeDetail() {
-            document.getElementById('popover').classList.remove('active');
-        }
+        document.getElementById('popover').classList.add('active');
+    }
 
-        window.addEventListener('load', drawLines);
-        window.addEventListener('resize', drawLines);
-    </script>
+    function closeDetail() {
+        document.getElementById('popover').classList.remove('active');
+    }
+
+    window.addEventListener('load', drawLines);
+    window.addEventListener('resize', drawLines);
+</script>
 </body>
 </html>
