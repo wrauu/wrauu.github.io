@@ -293,6 +293,7 @@
                 <!-- SVG vrstva pro propojení -->
                 <svg class="connections-layer" id="svgLayer">
                     <path id="line-queen-commander" />
+                    <path id="line-queen-steward" />
                     <path id="line-commander-marshal" />
                     <path id="line-commander-burgraves" />
                     <path id="line-marshal-submarshal" />
@@ -340,7 +341,7 @@
                 <div class="card" style="grid-row: 5;" onclick="showDetail('opat Hroznata', 'Kancléř', 'Královský kancléř a správce kanceláře.')">
                     <div class="role">Kancléř</div><div class="name">opat Hroznata</div>
                 </div>
-                <div class="card" style="grid-row: 5;" onclick="showDetail('Jošt ze Štěkné', 'Hofmistr', 'Správce dvora a nadřízený dvorních úředníků.')">
+                <div id="card-steward" class="card" style="grid-row: 5;" onclick="showDetail('Jošt ze Štěkné', 'Hofmistr', 'Správce dvora a nadřízený dvorních úředníků.')">
                     <div class="role">Hofmistr</div><div class="name">Jošt ze Štěkné</div>
                 </div>
                 <div class="card" style="grid-row: 5;" onclick="showDetail('Dobrohost z Ronšperka', 'Komoří', 'Správce komor a financí.')">
@@ -462,6 +463,7 @@
 
             const queen = getCoords('card-queen');
             const commander = getCoords('card-commander');
+            const steward = getCoords('card-steward');
             const marshal = getCoords('card-marshal');
             const submarshal = getCoords('card-submarshal');
             
@@ -482,12 +484,16 @@
             const pathQueenCommander = `M ${queen.centerX} ${queen.bottom} L ${queen.centerX} ${midY1} L ${commander.centerX} ${midY1} L ${commander.centerX} ${commander.top}`;
             document.getElementById('line-queen-commander').setAttribute('d', pathQueenCommander);
 
-            // 2. Velitel vojsk -> Maršálek
+            // 2. Královna -> Hofmistr
+            const pathQueenSteward = `M ${queen.centerX} ${queen.bottom} L ${queen.centerX} ${midY1} L ${steward.centerX} ${midY1} L ${steward.centerX} ${steward.top}`;
+            document.getElementById('line-queen-steward').setAttribute('d', pathQueenSteward);
+
+            // 3. Velitel vojsk -> Maršálek
             const midY2 = commander.bottom + (marshal.top - commander.bottom) / 2;
             const pathCommanderMarshal = `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midY2} L ${marshal.centerX} ${midY2} L ${marshal.centerX} ${marshal.top}`;
             document.getElementById('line-commander-marshal').setAttribute('d', pathCommanderMarshal);
 
-            // 3. Velitel vojsk -> Všichni purkrabí
+            // 4. Velitel vojsk -> Všichni purkrabí
             const midGap56Y = submarshal.bottom + (burgraveHradec.top - submarshal.bottom) / 2;
             const pathCommanderBurgraves = 
                 `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midGap56Y} ` +
@@ -498,27 +504,27 @@
                 `M ${commander.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${burgraveMyto.top}`;
             document.getElementById('line-commander-burgraves').setAttribute('d', pathCommanderBurgraves);
 
-            // 4. Maršálek -> Podmaršálek
+            // 5. Maršálek -> Podmaršálek
             const pathMarshalSubmarshal = `M ${marshal.centerX} ${marshal.bottom} L ${submarshal.centerX} ${submarshal.top}`;
             document.getElementById('line-marshal-submarshal').setAttribute('d', pathMarshalSubmarshal);
 
-            // 5. Purkrabí Hradecký -> Rychtář Hradecký
+            // 6. Purkrabí Hradecký -> Rychtář Hradecký
             const pathBurgraveReeve1 = `M ${burgraveHradec.centerX} ${burgraveHradec.bottom} L ${reeveHradec.centerX} ${reeveHradec.top}`;
             document.getElementById('line-burgrave-reeve-1').setAttribute('d', pathBurgraveReeve1);
 
-            // 6. Purkrabí Chrudimský -> Rychtář Chrudimský
+            // 7. Purkrabí Chrudimský -> Rychtář Chrudimský
             const pathBurgraveReeve2 = `M ${burgraveChrudim.centerX} ${burgraveChrudim.bottom} L ${reeveChrudim.centerX} ${reeveChrudim.top}`;
             document.getElementById('line-burgrave-reeve-2').setAttribute('d', pathBurgraveReeve2);
 
-            // 7. Purkrabí Jaroměřský -> Rychtář Jaroměřský
+            // 8. Purkrabí Jaroměřský -> Rychtář Jaroměřský
             const pathBurgraveReeve3 = `M ${burgraveJaromer.centerX} ${burgraveJaromer.bottom} L ${reeveJaromer.centerX} ${reeveJaromer.top}`;
             document.getElementById('line-burgrave-reeve-3').setAttribute('d', pathBurgraveReeve3);
 
-            // 8. Purkrabí Poličský -> Rychtář Poličský
+            // 9. Purkrabí Poličský -> Rychtář Poličský
             const pathBurgraveReeve4 = `M ${burgravePolicka.centerX} ${burgravePolicka.bottom} L ${reevePolicka.centerX} ${reevePolicka.top}`;
             document.getElementById('line-burgrave-reeve-4').setAttribute('d', pathBurgraveReeve4);
 
-            // 9. Purkrabí Mýtský -> Rychtář Mýtský
+            // 10. Purkrabí Mýtský -> Rychtář Mýtský
             const pathBurgraveReeve5 = `M ${burgraveMyto.centerX} ${burgraveMyto.bottom} L ${reeveMyto.centerX} ${reeveMyto.top}`;
             document.getElementById('line-burgrave-reeve-5').setAttribute('d', pathBurgraveReeve5);
         }
