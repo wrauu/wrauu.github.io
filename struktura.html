@@ -296,7 +296,9 @@
                     <!-- Všechny čáry maji jednotný styl z definice CSS .connections-layer path -->
                     <path id="line-queen-doctor-confessor" />
                     <path id="line-queen-main-branch" />
+                    <path id="line-queen-lady" />
                     <path id="line-steward-officials" />
+                    <path id="line-steward-lady" />
                     <path id="line-captain-sergeant" />
                     <path id="line-carver" />
 
@@ -509,16 +511,22 @@
                 `L ${docBranchX} ${confessor.centerY} L ${confessor.right} ${confessor.centerY}`;
             document.getElementById('line-queen-doctor-confessor').setAttribute('d', pathQueenDocConf);
 
-            // 2. Hlavní větev z Královny směrem dolů -> Velitel vojsk, Kancléř, Hofmistr, Komoří, Komorná
+            // 2. Hlavní větev z Královny směrem dolů -> Velitel vojsk, Kancléř, Hofmistr, Komoří
             const topBarY = queen.bottom + (commander.top - queen.bottom) / 2;
             const pathQueenMainBranch = 
                 `M ${queen.centerX} ${queen.bottom} L ${queen.centerX} ${topBarY} ` +
                 `L ${commander.centerX} ${topBarY} L ${commander.centerX} ${commander.top} ` +
                 `M ${queen.centerX} ${topBarY} L ${chancellor.centerX} ${topBarY} L ${chancellor.centerX} ${chancellor.top} ` +
                 `M ${queen.centerX} ${topBarY} L ${steward.centerX} ${topBarY} L ${steward.centerX} ${steward.top} ` +
-                `M ${queen.centerX} ${topBarY} L ${chamberlain.centerX} ${topBarY} L ${chamberlain.centerX} ${chamberlain.top} ` +
-                `M ${chamberlain.centerX} ${topBarY} L ${lady.centerX} ${topBarY} L ${lady.centerX} ${lady.top}`;
+                `M ${queen.centerX} ${topBarY} L ${chamberlain.centerX} ${topBarY} L ${chamberlain.centerX} ${chamberlain.top}`;
             document.getElementById('line-queen-main-branch').setAttribute('d', pathQueenMainBranch);
+
+            // 2b. Čára od Královny vpravo a dolů ke Komorné
+            const pathQueenLady = 
+                `M ${queen.right} ${queen.centerY} ` +
+                `L ${lady.centerX} ${queen.centerY} ` +
+                `L ${lady.centerX} ${lady.top}`;
+            document.getElementById('line-queen-lady').setAttribute('d', pathQueenLady);
 
             // 3. Hofmistr -> Hejtman král. stráže, Lovčí, Stolník, Číšník
             const midBarY = steward.bottom + (captain.top - steward.bottom) / 2;
@@ -529,6 +537,14 @@
                 `M ${steward.centerX} ${midBarY} L ${stewardTable.centerX} ${midBarY} L ${stewardTable.centerX} ${stewardTable.top} ` +
                 `M ${steward.centerX} ${midBarY} L ${cupbearer.centerX} ${midBarY} L ${cupbearer.centerX} ${cupbearer.top}`;
             document.getElementById('line-steward-officials').setAttribute('d', pathStewardOff);
+
+            // 3b. Hofmistr -> Komorná
+            const pathStewardLady = 
+                `M ${steward.centerX} ${steward.bottom} ` +
+                `L ${steward.centerX} ${midBarY} ` +
+                `L ${lady.centerX} ${midBarY} ` +
+                `L ${lady.centerX} ${lady.top}`;
+            document.getElementById('line-steward-lady').setAttribute('d', pathStewardLady);
 
             // 4. Hejtman král. stráže -> Seržant král. stráže
             document.getElementById('line-captain-sergeant').setAttribute('d', `M ${captain.centerX} ${captain.bottom} L ${sergeant.centerX} ${sergeant.top}`);
