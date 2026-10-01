@@ -303,9 +303,9 @@
                     <path id="line-captain-sergeant" />
                     <path id="line-carver" />
 
-                    <path id="line-commander-marshal" />
+                    <path id="line-commander-submarshal" />
                     <path id="line-commander-burgraves" />
-                    <path id="line-marshal-submarshal" />
+                    <path id="line-steward-burgraves" />
                     <path id="line-burgrave-reeve-1" />
                     <path id="line-burgrave-reeve-2" />
                     <path id="line-burgrave-reeve-3" />
@@ -314,8 +314,8 @@
                 </svg>
 
                 <!-- ŘÁDEK 1 (grid-row: 1) -->
-                <div id="card-doctor" class="card" style="grid-row: 1;" onclick="showDetail('Amát Hradecký', 'Lékař', 'Osobní lékař královské rodiny.')">
-                    <div class="role">Lékař</div><div class="name">Amát Hradecký</div>
+                <div id="card-doctor" class="card" style="grid-row: 1;" onclick="showDetail('Arnošt Hradecký', 'Lékař', 'Osobní lékař královské rodiny.')">
+                    <div class="role">Lékař</div><div class="name">Arnošt Hradecký</div>
                 </div>
                 <div class="empty-cell" style="grid-row: 1;"></div>
                 <div class="empty-cell" style="grid-row: 1;"></div>
@@ -359,8 +359,8 @@
                 <div class="empty-cell" style="grid-row: 5;"></div>
 
                 <!-- ŘÁDEK 4 (grid-row: 7) -->
-                <div id="card-marshal" class="card disabled" style="grid-row: 7;">
-                    <div class="role">Maršálek</div><div class="name">—</div>
+                <div id="card-submarshal" class="card" style="grid-row: 7;" onclick="showDetail('Martin z Bílé', 'Podmaršálek', 'Zástupce maršálka podřízený veliteli vojsk.')">
+                    <div class="role">Podmaršálek</div><div class="name">Martin z Bílé</div>
                 </div>
                 <div class="empty-cell" style="grid-row: 7;"></div>
                 <div id="card-captain" class="card" style="grid-row: 7;" onclick="showDetail('Vladimír z Vildenberka', 'Hejtman král. stráže', 'Velitel královské stráže podřízený hofmistrovi.')">
@@ -380,9 +380,7 @@
                 </div>
 
                 <!-- ŘÁDEK 5 (grid-row: 9) -->
-                <div id="card-submarshal" class="card" style="grid-row: 9;" onclick="showDetail('Martin z Bílé', 'Podmaršálek', 'Zástupce maršálka podřízený veliteli vojsk.')">
-                    <div class="role">Podmaršálek</div><div class="name">Martin z Bílé</div>
-                </div>
+                <div class="empty-cell" style="grid-row: 9;"></div>
                 <div class="empty-cell" style="grid-row: 9;"></div>
                 <div id="card-sergeant" class="card" style="grid-row: 9;" onclick="showDetail('Jan řečený Loupežník', 'Seržant král. stráže', 'Velitel oddílu královské stráže podřízený hejtmanovi.')">
                     <div class="role">Seržant král. stráže</div><div class="name">Jan ř. Loupežník</div>
@@ -478,7 +476,6 @@
             const steward = getCoords('card-steward');
             const chamberlain = getCoords('card-chamberlain');
 
-            const marshal = getCoords('card-marshal');
             const submarshal = getCoords('card-submarshal');
             
             const captain = getCoords('card-captain');
@@ -561,12 +558,12 @@
             // 5. Stolník -> Kráječ
             document.getElementById('line-carver').setAttribute('d', `M ${stewardTable.centerX} ${stewardTable.bottom} L ${carver.centerX} ${carver.top}`);
 
-            // 6. Velitel vojsk -> Maršálek
-            const midY2 = commander.bottom + (marshal.top - commander.bottom) / 2;
-            document.getElementById('line-commander-marshal').setAttribute('d', `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midY2} L ${marshal.centerX} ${midY2} L ${marshal.centerX} ${marshal.top}`);
+            // 6. Velitel vojsk -> Podmaršálek
+            const midY2 = commander.bottom + (submarshal.top - commander.bottom) / 2;
+            document.getElementById('line-commander-submarshal').setAttribute('d', `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midY2} L ${submarshal.centerX} ${midY2} L ${submarshal.centerX} ${submarshal.top}`);
 
             // 7. Velitel vojsk -> Všichni purkrabí
-            const midGap56Y = submarshal.bottom + (burgraveHradec.top - submarshal.bottom) / 2;
+            const midGap56Y = sergeant.bottom + (burgraveHradec.top - sergeant.bottom) / 2;
             const pathCommanderBurgraves = 
                 `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midGap56Y} ` +
                 `L ${burgraveHradec.centerX} ${midGap56Y} L ${burgraveHradec.centerX} ${burgraveHradec.top} ` +
@@ -576,10 +573,19 @@
                 `M ${commander.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${burgraveMyto.top}`;
             document.getElementById('line-commander-burgraves').setAttribute('d', pathCommanderBurgraves);
 
-            // 8. Maršálek -> Podmaršálek
-            document.getElementById('line-marshal-submarshal').setAttribute('d', `M ${marshal.centerX} ${marshal.bottom} L ${submarshal.centerX} ${submarshal.top}`);
+            // 7b. Hofmistr -> Purkrabí (svislá čára přesně v polovině mezi Hejtmanem a spojnicí Velitele vojsk)
+            const captainLeft = captain.left;
+            const commanderX = commander.centerX;
+            const lineX = commanderX + (captainLeft - commanderX) / 2;
 
-            // 9. Purkrabí -> Rychtáři
+            const pathStewardBurgraves = 
+                `M ${steward.centerX} ${steward.bottom} ` +
+                `L ${steward.centerX} ${midBarY} ` +
+                `L ${lineX} ${midBarY} ` +
+                `L ${lineX} ${midGap56Y}`;
+            document.getElementById('line-steward-burgraves').setAttribute('d', pathStewardBurgraves);
+
+            // 8. Purkrabí -> Rychtáři
             document.getElementById('line-burgrave-reeve-1').setAttribute('d', `M ${burgraveHradec.centerX} ${burgraveHradec.bottom} L ${reeveHradec.centerX} ${reeveHradec.top}`);
             document.getElementById('line-burgrave-reeve-2').setAttribute('d', `M ${burgraveChrudim.centerX} ${burgraveChrudim.bottom} L ${reeveChrudim.centerX} ${reeveChrudim.top}`);
             document.getElementById('line-burgrave-reeve-3').setAttribute('d', `M ${burgraveJaromer.centerX} ${burgraveJaromer.bottom} L ${reeveJaromer.centerX} ${reeveJaromer.top}`);
