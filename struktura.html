@@ -101,7 +101,7 @@
             position: relative;
         }
 
-        /* SVG vrstva pro propojovací čáry */
+       /* SVG vrstva pro propojovací čáry */
         .connections-layer {
             position: absolute;
             top: 0;
@@ -116,7 +116,8 @@
             fill: none;
             stroke: #8b7355;
             stroke-width: 2;
-            stroke-dasharray: 4 2;
+            stroke-dasharray: 2 2;
+            stroke-linecap: round;
         }
 
         /* Kartičky postav (výška 46px) */
@@ -292,9 +293,13 @@
             <div class="court-grid" id="courtGrid">
                 <!-- SVG vrstva pro propojení -->
                 <svg class="connections-layer" id="svgLayer">
-                    <!-- Stávající spojení -->
-                    <path id="line-queen-commander" />
-                    <path id="line-queen-steward" />
+                    <!-- Všechny čáry maji jednotný styl z definice CSS .connections-layer path -->
+                    <path id="line-queen-doctor-confessor" />
+                    <path id="line-queen-main-branch" />
+                    <path id="line-steward-officials" />
+                    <path id="line-captain-sergeant" />
+                    <path id="line-carver" />
+
                     <path id="line-commander-marshal" />
                     <path id="line-commander-burgraves" />
                     <path id="line-marshal-submarshal" />
@@ -303,15 +308,6 @@
                     <path id="line-burgrave-reeve-3" />
                     <path id="line-burgrave-reeve-4" />
                     <path id="line-burgrave-reeve-5" />
-
-                    <!-- Nová spojení podle návrhu na obrázku -->
-                    <path id="line-queen-doctor-confessor" />
-                    <path id="line-queen-chancellor" />
-                    <path id="line-queen-chamberlain" />
-                    <path id="line-commander-guards" />
-                    <path id="line-steward-officials" />
-                    <path id="line-captain-sergeant" />
-                    <path id="line-carver" />
                 </svg>
 
                 <!-- ŘÁDEK 1 (grid-row: 1) -->
@@ -478,6 +474,7 @@
             const chancellor = getCoords('card-chancellor');
             const steward = getCoords('card-steward');
             const chamberlain = getCoords('card-chamberlain');
+
             const marshal = getCoords('card-marshal');
             const submarshal = getCoords('card-submarshal');
             
@@ -502,21 +499,48 @@
             const reevePolicka = getCoords('card-reeve-policka');
             const reeveMyto = getCoords('card-reeve-myto');
 
-            // 1. Královna -> Velitel vojsk
-            const midY1 = queen.bottom + (commander.top - queen.bottom) / 2;
-            const pathQueenCommander = `M ${queen.centerX} ${queen.bottom} L ${queen.centerX} ${midY1} L ${commander.centerX} ${midY1} L ${commander.centerX} ${commander.top}`;
-            document.getElementById('line-queen-commander').setAttribute('d', pathQueenCommander);
+            // 1. Královna -> Lékař & Zpovědník
+            const docBranchX = doctor.right + 25;
+            const pathQueenDocConf = 
+                `M ${queen.left} ${queen.centerY} ` +
+                `L ${docBranchX} ${queen.centerY} ` +
+                `L ${docBranchX} ${doctor.centerY} L ${doctor.right} ${doctor.centerY} ` +
+                `M ${docBranchX} ${queen.centerY} ` +
+                `L ${docBranchX} ${confessor.centerY} L ${confessor.right} ${confessor.centerY}`;
+            document.getElementById('line-queen-doctor-confessor').setAttribute('d', pathQueenDocConf);
 
-            // 2. Královna -> Hofmistr
-            const pathQueenSteward = `M ${queen.centerX} ${queen.bottom} L ${queen.centerX} ${midY1} L ${steward.centerX} ${midY1} L ${steward.centerX} ${steward.top}`;
-            document.getElementById('line-queen-steward').setAttribute('d', pathQueenSteward);
+            // 2. Hlavní větev z Královny směrem dolů -> Velitel vojsk, Kancléř, Hofmistr, Komoří, Komorná
+            const topBarY = queen.bottom + (commander.top - queen.bottom) / 2;
+            const pathQueenMainBranch = 
+                `M ${queen.centerX} ${queen.bottom} L ${queen.centerX} ${topBarY} ` +
+                `L ${commander.centerX} ${topBarY} L ${commander.centerX} ${commander.top} ` +
+                `M ${queen.centerX} ${topBarY} L ${chancellor.centerX} ${topBarY} L ${chancellor.centerX} ${chancellor.top} ` +
+                `M ${queen.centerX} ${topBarY} L ${steward.centerX} ${topBarY} L ${steward.centerX} ${steward.top} ` +
+                `M ${queen.centerX} ${topBarY} L ${chamberlain.centerX} ${topBarY} L ${chamberlain.centerX} ${chamberlain.top} ` +
+                `M ${chamberlain.centerX} ${topBarY} L ${lady.centerX} ${topBarY} L ${lady.centerX} ${lady.top}`;
+            document.getElementById('line-queen-main-branch').setAttribute('d', pathQueenMainBranch);
 
-            // 3. Velitel vojsk -> Maršálek
+            // 3. Hofmistr -> Hejtman král. stráže, Lovčí, Stolník, Číšník
+            const midBarY = steward.bottom + (captain.top - steward.bottom) / 2;
+            const pathStewardOff = 
+                `M ${steward.centerX} ${steward.bottom} L ${steward.centerX} ${midBarY} ` +
+                `L ${captain.centerX} ${midBarY} L ${captain.centerX} ${captain.top} ` +
+                `M ${steward.centerX} ${midBarY} L ${huntsman.centerX} ${midBarY} L ${huntsman.centerX} ${huntsman.top} ` +
+                `M ${steward.centerX} ${midBarY} L ${stewardTable.centerX} ${midBarY} L ${stewardTable.centerX} ${stewardTable.top} ` +
+                `M ${steward.centerX} ${midBarY} L ${cupbearer.centerX} ${midBarY} L ${cupbearer.centerX} ${cupbearer.top}`;
+            document.getElementById('line-steward-officials').setAttribute('d', pathStewardOff);
+
+            // 4. Hejtman král. stráže -> Seržant král. stráže
+            document.getElementById('line-captain-sergeant').setAttribute('d', `M ${captain.centerX} ${captain.bottom} L ${sergeant.centerX} ${sergeant.top}`);
+
+            // 5. Stolník -> Kráječ
+            document.getElementById('line-carver').setAttribute('d', `M ${stewardTable.centerX} ${stewardTable.bottom} L ${carver.centerX} ${carver.top}`);
+
+            // 6. Velitel vojsk -> Maršálek
             const midY2 = commander.bottom + (marshal.top - commander.bottom) / 2;
-            const pathCommanderMarshal = `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midY2} L ${marshal.centerX} ${midY2} L ${marshal.centerX} ${marshal.top}`;
-            document.getElementById('line-commander-marshal').setAttribute('d', pathCommanderMarshal);
+            document.getElementById('line-commander-marshal').setAttribute('d', `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midY2} L ${marshal.centerX} ${midY2} L ${marshal.centerX} ${marshal.top}`);
 
-            // 4. Velitel vojsk -> Všichni purkrabí
+            // 7. Velitel vojsk -> Všichni purkrabí
             const midGap56Y = submarshal.bottom + (burgraveHradec.top - submarshal.bottom) / 2;
             const pathCommanderBurgraves = 
                 `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midGap56Y} ` +
@@ -527,60 +551,15 @@
                 `M ${commander.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${burgraveMyto.top}`;
             document.getElementById('line-commander-burgraves').setAttribute('d', pathCommanderBurgraves);
 
-            // 5. Maršálek -> Podmaršálek
-            const pathMarshalSubmarshal = `M ${marshal.centerX} ${marshal.bottom} L ${submarshal.centerX} ${submarshal.top}`;
-            document.getElementById('line-marshal-submarshal').setAttribute('d', pathMarshalSubmarshal);
+            // 8. Maršálek -> Podmaršálek
+            document.getElementById('line-marshal-submarshal').setAttribute('d', `M ${marshal.centerX} ${marshal.bottom} L ${submarshal.centerX} ${submarshal.top}`);
 
-            // 6-10. Purkrabí -> Rychtáři
+            // 9. Purkrabí -> Rychtáři
             document.getElementById('line-burgrave-reeve-1').setAttribute('d', `M ${burgraveHradec.centerX} ${burgraveHradec.bottom} L ${reeveHradec.centerX} ${reeveHradec.top}`);
             document.getElementById('line-burgrave-reeve-2').setAttribute('d', `M ${burgraveChrudim.centerX} ${burgraveChrudim.bottom} L ${reeveChrudim.centerX} ${reeveChrudim.top}`);
             document.getElementById('line-burgrave-reeve-3').setAttribute('d', `M ${burgraveJaromer.centerX} ${burgraveJaromer.bottom} L ${reeveJaromer.centerX} ${reeveJaromer.top}`);
             document.getElementById('line-burgrave-reeve-4').setAttribute('d', `M ${burgravePolicka.centerX} ${burgravePolicka.bottom} L ${reevePolicka.centerX} ${reevePolicka.top}`);
             document.getElementById('line-burgrave-reeve-5').setAttribute('d', `M ${burgraveMyto.centerX} ${burgraveMyto.bottom} L ${reeveMyto.centerX} ${reeveMyto.top}`);
-
-            // --- NOVĚ DOPLNĚNÉ ČÁRY DLE NÁVRHU ---
-
-            // 11. Královna -> Lékař & Zpovědník (čára z levé hrany Královny do X osy lékaře/zpovědníka)
-            const leftX = doctor.right + (commander.left - doctor.right) / 2;
-            const pathQueenDocConf = 
-                `M ${queen.left} ${queen.centerY} L ${leftX} ${queen.centerY} ` +
-                `L ${leftX} ${doctor.centerY} L ${doctor.right} ${doctor.centerY} ` +
-                `M ${leftX} ${queen.centerY} L ${leftX} ${confessor.centerY} L ${confessor.right} ${confessor.centerY}`;
-            document.getElementById('line-queen-doctor-confessor').setAttribute('d', pathQueenDocConf);
-
-            // 12. Královna -> Kancléř (připojení z horní vodorovné linie na kancléře)
-            const pathQueenChancellor = `M ${chancellor.centerX} ${midY1} L ${chancellor.centerX} ${chancellor.top}`;
-            document.getElementById('line-queen-chancellor').setAttribute('d', pathQueenChancellor);
-
-            // 13. Královna -> Komoří (čára z pravé hrany Královny dolů ke Komořímu)
-            const rightX = chamberlain.right + 15;
-            const pathQueenChamberlain = `M ${queen.right} ${queen.centerY} L ${rightX} ${queen.centerY} L ${rightX} ${chamberlain.centerY} L ${chamberlain.right} ${chamberlain.centerY}`;
-            document.getElementById('line-queen-chamberlain').setAttribute('d', pathQueenChamberlain);
-
-            // 14. Velitel vojsk -> Hejtman král. stráže & Lovčí
-            const midYCmdGuards = commander.bottom + (captain.top - commander.bottom) / 2;
-            const pathCmdGuards = 
-                `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midYCmdGuards} ` +
-                `L ${captain.centerX} ${midYCmdGuards} L ${captain.centerX} ${captain.top} ` +
-                `M ${commander.centerX} ${midYCmdGuards} L ${huntsman.centerX} ${midYCmdGuards} L ${huntsman.centerX} ${huntsman.top}`;
-            document.getElementById('line-commander-guards').setAttribute('d', pathCmdGuards);
-
-            // 15. Hofmistr / Komoří -> Stolník, Číšník, Komorná
-            const midYStewardOff = steward.bottom + (stewardTable.top - steward.bottom) / 2;
-            const pathStewardOff = 
-                `M ${steward.centerX} ${steward.bottom} L ${steward.centerX} ${midYStewardOff} ` +
-                `L ${stewardTable.centerX} ${midYStewardOff} L ${stewardTable.centerX} ${stewardTable.top} ` +
-                `M ${steward.centerX} ${midYStewardOff} L ${cupbearer.centerX} ${midYStewardOff} L ${cupbearer.centerX} ${cupbearer.top} ` +
-                `M ${steward.centerX} ${midYStewardOff} L ${lady.centerX} ${midYStewardOff} L ${lady.centerX} ${lady.top}`;
-            document.getElementById('line-steward-officials').setAttribute('d', pathStewardOff);
-
-            // 16. Hejtman král. stráže -> Seržant král. stráže
-            const pathCaptainSergeant = `M ${captain.centerX} ${captain.bottom} L ${sergeant.centerX} ${sergeant.top}`;
-            document.getElementById('line-captain-sergeant').setAttribute('d', pathCaptainSergeant);
-
-            // 17. Stolník -> Kráječ
-            const pathCarver = `M ${stewardTable.centerX} ${stewardTable.bottom} L ${carver.centerX} ${carver.top}`;
-            document.getElementById('line-carver').setAttribute('d', pathCarver);
         }
 
         function showDetail(name, role, desc) {
