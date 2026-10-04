@@ -12,9 +12,19 @@ main{max-width:1300px;margin:auto;padding:24px}
 
 /* Layout: Původní nastavení */
 .map-layout{display:flex;gap:18px;align-items:flex-start}
-.map-wrap{position:relative;flex:1;min-width:0;background:#c9b889;border:10px solid #4c3b25;border-radius:8px;box-shadow:0 12px 35px #0008;overflow:hidden;line-height:0}
-.map-image{display:block;width:100%;height:auto}
+.map-wrap{position:relative;flex:1;min-width:0;background:#c9b889;border:10px solid #4c3b25;border-radius:8px;box-shadow:0 12px 35px #0008;overflow:hidden;line-height:0;cursor:grab;user-select:none;touch-action:none}
+.map-wrap:active{cursor:grabbing}
+
+/* Zoomovací kontejner */
+.map-viewport{width:100%;height:100%;position:relative;transform-origin:0 0;will-change:transform}
+
+.map-image{display:block;width:100%;height:auto;pointer-events:none}
 .map-overlay{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* Ovládací tlačítka pro zoom */
+.zoom-controls{position:absolute;bottom:15px;right:15px;z-index:10;display:flex;flex-direction:column;gap:6px}
+.zoom-btn{width:36px;height:36px;background:var(--panel);border:1px solid #493f31;color:var(--gold);font-size:20px;font-weight:bold;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s;box-shadow:0 4px 10px rgba(0,0,0,0.5)}
+.zoom-btn:hover{background:#3a3021;color:#fff}
 
 /* Bod na mapě */
 .point{cursor:pointer;transition:opacity .2s ease}.point circle{fill:#8f3f32;stroke:#f8e8bd;stroke-width:3}.point:hover circle,.point:focus circle,.point.is-active circle{fill:#c99d4a}
@@ -82,44 +92,53 @@ main{max-width:1300px;margin:auto;padding:24px}
 </style>
 </head>
 <body>
-<header><h1>Lokace</h1><div class="subtitle">Interaktivní historická mapa sídel <a href=https://wrauu.github.io/struktura.html>členů</a> hradeckého dvora Alžběty Richenzy.</div></header>
+<header><h1>Lokace</h1><div class="subtitle">Interaktivní historická mapa sídel členů hradeckého dvora Alžběty Richenzy.</div></header>
 <main>
 <div class="map-layout">
   <section class="map-wrap" id="mapWrap">
-    <img class="map-image" src="assets/mapa.png" alt="Mapa českých zemí s vyznačenými městy a hrady">
-    <svg class="map-overlay" viewBox="0 0 1693 905" preserveAspectRatio="none" aria-label="Interaktivní vrstva mapy">
-      <g class="point" data-name="Praha" data-type="město" tabindex="0" aria-label="Praha, město"><circle cx="558" cy="403" r="10"/><text x="575" y="403">Praha</text></g>
-      <g class="point" data-name="Jaroměř" data-type="město" tabindex="0" aria-label="Jaroměř, město"><circle cx="823" cy="320" r="10"/><text x="803" y="320" text-anchor="end">Jaroměř</text></g>
-      <g class="point" data-name="Hradec Králové" data-type="město" tabindex="0" aria-label="Hradec Králové, město"><circle cx="810" cy="365" r="10"/><text x="827" y="365">Hradec Králové</text></g>
-      <g class="point" data-name="Chrudim" data-type="město" tabindex="0" aria-label="Chrudim, město"><circle cx="808" cy="437" r="10"/><text x="788" y="437" text-anchor="end">Chrudim</text></g>
-      <g class="point" data-name="Vysoké Mýto" data-type="město" tabindex="0" aria-label="Vysoké Mýto, město"><circle cx="868" cy="437" r="10"/><text x="885" y="437">Vysoké Mýto</text></g>
-      <g class="point" data-name="Polička" data-type="město" tabindex="0" aria-label="Polička, město"><circle cx="887" cy="502" r="10"/><text x="904" y="502">Polička</text></g>
-      <g class="point" data-name="Olomouc" data-type="město" tabindex="0" aria-label="Olomouc, město"><circle cx="1065" cy="538" r="10"/><text x="1082" y="538">Olomouc</text></g>
-      <g class="point" data-name="Brno" data-type="město" tabindex="0" aria-label="Brno, město"><circle cx="949" cy="649" r="10"/><text x="966" y="649">Brno</text></g>
-      <g class="point castle" data-name="Rabštejn" data-type="hrad" data-link="mista/rabstejn.html" tabindex="0" aria-label="Rabštejn, hrad"><path class="castle-icon"
-    d="M360 405 H376 V403 H374 V398 H376 V393 H374 V391 H375 V385 H372 V389 H369 V385 H366 V389 H363 V385 H361 V391 H362 V393 H360 V398 H362 V403 H360 Z" /><text x="352" y="405" text-anchor="end">Rabštejn</text></g>
-      <g class="point castle" data-name="Lichtenburk (Lichnice)" data-type="hrad" data-link="mista/lichtenburk.html" tabindex="0" aria-label="Lichtenburk, hrad"><path class="castle-icon"
-    d="M772 480 H788 V478 H786 V473 H788 V468 H786 V466 H787 V460 H784 V464 H781 V460 H778 V464 H775 V460 H773 V466 H774 V468 H772 V473 H774 V478 H772 Z" /><text x="798" y="480">Lichtenburk</text></g>
-      <g class="point castle" data-name="Žleby" data-type="hrad" data-link="mista/zleby.html" tabindex="0" aria-label="Žleby, hrad"><path class="castle-icon"
-    d="M751 480 H767 V478 H765 V473 H767 V468 H765 V466 H766 V460 H763 V464 H760 V460 H757 V464 H754 V460 H752 V466 H753 V468 H751 V473 H753 V478 H751 Z" /><text x="743" y="480" text-anchor="end">Žleby</text></g>
-      <g class="point castle" data-name="Rysov" data-type="hrad" data-link="mista/rysov.html" tabindex="0" aria-label="Rysov, hrad"><path class="castle-icon"
-    d="M915 610 H931 V608 H929 V603 H931 V598 H929 V596 H930 V590 H927 V594 H924 V590 H921 V594 H918 V590 H916 V596 H917 V598 H915 V603 H917 V608 H915 Z" /><text x="907" y="610" text-anchor="end">Rysov</text></g>
-      <g class="point castle" data-name="Lomnice" data-type="hrad" data-link="mista/lomnice.html" tabindex="0" aria-label="Lomnice, hrad">
-  <path class="castle-icon" d="M933 600 H949 V598 H947 V593 H949 V588 H947 V586 H948 V580 H945 V584 H942 V580 H939 V584 H936 V580 H934 V586 H935 V588 H933 V593 H935 V598 H933 Z" />
-  <text x="954" y="600">Lomnice</text>
-</g>
-      <g class="point castle" data-name="Tasov" data-type="hrad" data-link="mista/tasov.html" tabindex="0" aria-label="Tasov, hrad">
-  <path class="castle-icon" d="M845 635 H861 V633 H859 V628 H861 V623 H859 V621 H860 V615 H857 V619 H854 V615 H851 V619 H848 V615 H846 V621 H847 V623 H845 V628 H847 V633 H845 Z" />
-  <text x="837" y="635" text-anchor="end">Tasov</text>
-</g>
-      <g class="point castle" data-name="Ľúpča" data-type="hrad" data-link="mista/lupca.html" tabindex="0" aria-label="Ľúpča, hrad"><path class="castle-icon"
-    d="M1420 770 H1436 V768 H1434 V763 H1436 V758 H1434 V756 H1435 V750 H1432 V754 H1429 V750 H1426 V754 H1423 V750 H1421 V756 H1422 V758 H1420 V763 H1422 V768 H1420 Z" /><text x="1446" y="770">Ľúpča</text></g>
-      <g class="point castle" data-name="Frymburk" data-type="hrad" data-link="mista/frymburk.html" tabindex="0" aria-label="Frymburk, hrad">
-  <path class="castle-icon" d="M890 330 H906 V328 H904 V323 H906 V318 H904 V316 H905 V310 H902 V314 H899 V310 H896 V314 H893 V310 H891 V316 H892 V318 H890 Z" />
-  <text x="916" y="330">Frymburk</text>
-</g>
-      <g class="point" data-name="Radvaň" data-type="město" tabindex="0" aria-label="Radvaň, město"><circle cx="1410" cy="780" r="10"/><text x="1390" y="780" text-anchor="end">Radvaň</text></g>
-    </svg>
+    <div class="map-viewport" id="mapViewport">
+      <img class="map-image" src="assets/mapa.png" alt="Mapa českých zemí s vyznačenými městy a hrady">
+      <svg class="map-overlay" viewBox="0 0 1693 905" preserveAspectRatio="none" aria-label="Interaktivní vrstva mapy">
+        <g class="point" data-name="Praha" data-type="město" tabindex="0" aria-label="Praha, město"><circle cx="558" cy="403" r="10"/><text x="575" y="403">Praha</text></g>
+        <g class="point" data-name="Jaroměř" data-type="město" tabindex="0" aria-label="Jaroměř, město"><circle cx="823" cy="320" r="10"/><text x="803" y="320" text-anchor="end">Jaroměř</text></g>
+        <g class="point" data-name="Hradec Králové" data-type="město" tabindex="0" aria-label="Hradec Králové, město"><circle cx="810" cy="365" r="10"/><text x="827" y="365">Hradec Králové</text></g>
+        <g class="point" data-name="Chrudim" data-type="město" tabindex="0" aria-label="Chrudim, město"><circle cx="808" cy="437" r="10"/><text x="788" y="437" text-anchor="end">Chrudim</text></g>
+        <g class="point" data-name="Vysoké Mýto" data-type="město" tabindex="0" aria-label="Vysoké Mýto, město"><circle cx="868" cy="437" r="10"/><text x="885" y="437">Vysoké Mýto</text></g>
+        <g class="point" data-name="Polička" data-type="město" tabindex="0" aria-label="Polička, město"><circle cx="887" cy="502" r="10"/><text x="904" y="502">Polička</text></g>
+        <g class="point" data-name="Olomouc" data-type="město" tabindex="0" aria-label="Olomouc, město"><circle cx="1065" cy="538" r="10"/><text x="1082" y="538">Olomouc</text></g>
+        <g class="point" data-name="Brno" data-type="město" tabindex="0" aria-label="Brno, město"><circle cx="949" cy="649" r="10"/><text x="966" y="649">Brno</text></g>
+        <g class="point castle" data-name="Rabštejn" data-type="hrad" data-link="mista/rabstejn.html" tabindex="0" aria-label="Rabštejn, hrad"><path class="castle-icon"
+      d="M360 405 H376 V403 H374 V398 H376 V393 H374 V391 H375 V385 H372 V389 H369 V385 H366 V389 H363 V385 H361 V391 H362 V393 H360 V398 H362 V403 H360 Z" /><text x="352" y="405" text-anchor="end">Rabštejn</text></g>
+        <g class="point castle" data-name="Lichtenburk (Lichnice)" data-type="hrad" data-link="mista/lichtenburk.html" tabindex="0" aria-label="Lichtenburk, hrad"><path class="castle-icon"
+      d="M772 480 H788 V478 H786 V473 H788 V468 H786 V466 H787 V460 H784 V464 H778 V460 H775 V464 H773 V466 H774 V468 H772 V473 H774 V478 H772 Z" /><text x="798" y="480">Lichtenburk</text></g>
+        <g class="point castle" data-name="Žleby" data-type="hrad" data-link="mista/zleby.html" tabindex="0" aria-label="Žleby, hrad"><path class="castle-icon"
+      d="M751 480 H767 V478 H765 V473 H767 V468 H765 V466 H766 V460 H763 V464 H760 V460 H757 V464 H754 V460 H752 V466 H753 V468 H751 V473 H753 V478 H751 Z" /><text x="743" y="480" text-anchor="end">Žleby</text></g>
+        <g class="point castle" data-name="Rysov" data-type="hrad" data-link="mista/rysov.html" tabindex="0" aria-label="Rysov, hrad"><path class="castle-icon"
+      d="M915 610 H931 V608 H929 V603 H931 V598 H929 V596 H930 V590 H927 V594 H924 V590 H921 V594 H918 V590 H916 V596 H917 V598 H915 V603 H917 V608 H915 Z" /><text x="907" y="610" text-anchor="end">Rysov</text></g>
+        <g class="point castle" data-name="Lomnice" data-type="hrad" data-link="mista/lomnice.html" tabindex="0" aria-label="Lomnice, hrad">
+    <path class="castle-icon" d="M933 600 H949 V598 H947 V593 H949 V588 H947 V586 H948 V580 H945 V584 H942 V580 H939 V584 H936 V580 H934 V586 H935 V588 H933 V593 H935 V598 H933 Z" />
+    <text x="954" y="600">Lomnice</text>
+  </g>
+        <g class="point castle" data-name="Tasov" data-type="hrad" data-link="mista/tasov.html" tabindex="0" aria-label="Tasov, hrad">
+    <path class="castle-icon" d="M845 635 H861 V633 H859 V628 H861 V623 H859 V621 H860 V615 H857 V619 H854 V615 H851 V619 H848 V615 H846 V621 H847 V623 H845 V628 H847 V633 H845 Z" />
+    <text x="837" y="635" text-anchor="end">Tasov</text>
+  </g>
+        <g class="point castle" data-name="Ľúpča" data-type="hrad" data-link="mista/lupca.html" tabindex="0" aria-label="Ľúpča, hrad"><path class="castle-icon"
+      d="M1420 770 H1436 V768 H1434 V763 H1436 V758 H1434 V756 H1435 V750 H1432 V754 H1429 V750 H1426 V754 H1423 V750 H1421 V756 H1422 V758 H1420 V763 H1422 V768 H1420 Z" /><text x="1446" y="770">Ľúpča</text></g>
+        <g class="point castle" data-name="Frymburk" data-type="hrad" data-link="mista/frymburk.html" tabindex="0" aria-label="Frymburk, hrad">
+    <path class="castle-icon" d="M890 330 H906 V328 H904 V323 H906 V318 H904 V316 H905 V310 H902 V314 H899 V310 H896 V314 H893 V310 H891 V316 H892 V318 H890 Z" />
+    <text x="916" y="330">Frymburk</text>
+  </g>
+        <g class="point" data-name="Radvaň" data-type="město" tabindex="0" aria-label="Radvaň, město"><circle cx="1410" cy="780" r="10"/><text x="1390" y="780" text-anchor="end">Radvaň</text></g>
+      </svg>
+    </div>
+
+    <!-- Ovládací tlačítka -->
+    <div class="zoom-controls">
+      <button class="zoom-btn" id="zoomIn" title="Přiblížit">+</button>
+      <button class="zoom-btn" id="zoomOut" title="Oddálit">−</button>
+      <button class="zoom-btn" id="zoomReset" title="Obnovit pohled">R</button>
+    </div>
   </section>
 
   <div class="menu-container">
@@ -156,7 +175,16 @@ main{max-width:1300px;margin:auto;padding:24px}
               </span>
             </a>
           </li>
-          <li>
+
+<li>
+            <a href="#" data-targets="">
+              <img src="assets/ronsperk-erb.png" alt="Erb Dobrohost z Ronšperka" class="retinue-icon">
+              <span class="retinue-info">
+                Dobrohost z Ronšperka<span class="kind">Komorník hradecké královny</span>
+              </span>
+            </a>
+          </li>
+<li>
             <a href="#" data-targets="Rabštejn, Jaroměř">
               <img src="assets/rabstejn-erb.png" alt="Erb Jiří z Rabštejna" class="retinue-icon">
               <span class="retinue-info">
@@ -164,14 +192,58 @@ main{max-width:1300px;margin:auto;padding:24px}
               </span>
             </a>
           </li>
-          <li>
-            <a href="#" data-targets="Lomnice, Tasov, Chrudim">
-              <img src="assets/lomnice-erb.png" alt="Erb Pánové z Tasova a Lomnice" class="retinue-icon">
+<li>
+            <a href="#" data-targets="">
+              <img src="assets/vildenberk-erb.png" alt="Erb Vladimír z Vildenberka" class="retinue-icon">
               <span class="retinue-info">
-                Pánové z Tasova a Lomnice<span class="kind">Vznat - chrudimský purkrabí a velitel vojsk, Jan - zpovědník</span>
+                Vladimír z Vildenberka<span class="kind">Hejtman královniny stráže</span>
               </span>
             </a>
           </li>
+<li>
+            <a href="#" data-targets="Lomnice, Tasov">
+              <img src="assets/lomnice-erb.png" alt="Erb Pánové z Tasova a Lomnice" class="retinue-icon">
+              <span class="retinue-info">
+                Pánové z Tasova a Lomnice<span class="kind">Vznat - Chrudimský purkrabí a velitel královniných vojsk, Jan - zpovědník</span>
+              </span>
+            </a>
+          </li>
+<li>
+            <a href="#" data-targets="">
+              <img src="assets/bile-erb.png" alt="Erb Martin z Bílé" class="retinue-icon">
+              <span class="retinue-info">
+                Martin z Bílé<span class="kind">Podmaršálek hradecké královny</span>
+              </span>
+            </a>
+          </li>
+
+<li>
+            <a href="#" data-targets="">
+              <img src="assets/haro-erb.png" alt="Erb don Iňigo Díaz de Haro" class="retinue-icon">
+              <span class="retinue-info">
+                don Iňigo Díaz de Haro<span class="kind">Velvyslanec království Kastílie a León</span>
+              </span>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" data-targets="">
+              <img src="assets/nemcic-erb.png" alt="Erb Svatomír z Němčic" class="retinue-icon">
+              <span class="retinue-info">
+                Svatomír z Němčic<span class="kind">Královský lovčí</span>
+              </span>
+            </a>
+          </li>
+
+     <li>
+            <a href="#" data-targets="">
+              <img src="assets/chudobin-erb.png" alt="Erb Radegunda Nemravová z Chudobína" class="retinue-icon">
+              <span class="retinue-info">
+                Radegunda Nemravová z Chudobína<span class="kind">Sestra Kordula</span>
+              </span>
+            </a>
+          </li>
+          
           <li>
             <a href="#" data-targets="Žleby,Lichtenburk (Lichnice)">
               <img src="assets/lichtenburk-erb.png" alt="Erb Matylda ze Žleb a Lichtenburka" class="retinue-icon">
@@ -294,6 +366,127 @@ retinueLinks.forEach(link => {
   link.addEventListener('blur', () => handleHover(false));
   
   link.addEventListener('click', e => e.preventDefault());
+});
+
+/* --- LOGIKA DLA ZOOM A PAN (POSUNU) --- */
+const mapWrap = document.getElementById('mapWrap');
+const mapViewport = document.getElementById('mapViewport');
+
+const MIN_SCALE = 1;
+const MAX_SCALE = 5;
+
+let scale = 1;
+let pointX = 0;
+let pointY = 0;
+let startX = 0;
+let startY = 0;
+let isDragging = false;
+let isPanningOrZooming = false;
+
+function updateTransform() {
+  scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
+
+  if (scale === MIN_SCALE) {
+    pointX = 0;
+    pointY = 0;
+  } else {
+    const rect = mapWrap.getBoundingClientRect();
+    const minTranslateX = rect.width * (1 - scale);
+    const minTranslateY = rect.height * (1 - scale);
+
+    pointX = Math.min(Math.max(minTranslateX, pointX), 0);
+    pointY = Math.min(Math.max(minTranslateY, pointY), 0);
+  }
+
+  mapViewport.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+}
+
+function zoomToPoint(cx, cy, factor) {
+  const newScale = Math.min(Math.max(MIN_SCALE, scale * factor), MAX_SCALE);
+  if (newScale === scale) return; // Měřítko dosáhlo limitu, neposouvat mapu
+
+  const xs = (cx - pointX) / scale;
+  const ys = (cy - pointY) / scale;
+
+  scale = newScale;
+  pointX = cx - xs * scale;
+  pointY = cy - ys * scale;
+
+  updateTransform();
+}
+
+// Zoom kolečkem myši
+mapWrap.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const rect = mapWrap.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  const factor = -e.deltaY > 0 ? 1.2 : 0.8;
+  zoomToPoint(mouseX, mouseY, factor);
+}, { passive: false });
+
+// Posun (Pan) - Dragging
+mapWrap.addEventListener('pointerdown', (e) => {
+  if (e.target.closest('.zoom-controls')) return;
+
+  isDragging = true;
+  isPanningOrZooming = false;
+  startX = e.clientX - pointX;
+  startY = e.clientY - pointY;
+  
+  mapViewport.setPointerCapture(e.pointerId);
+});
+
+mapWrap.addEventListener('pointermove', (e) => {
+  if (!isDragging) return;
+  const dx = e.clientX - (startX + pointX);
+  const dy = e.clientY - (startY + pointY);
+  if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+    isPanningOrZooming = true;
+  }
+  pointX = e.clientX - startX;
+  pointY = e.clientY - startY;
+  updateTransform();
+});
+
+mapWrap.addEventListener('pointerup', (e) => {
+  if (isDragging) {
+    isDragging = false;
+    try {
+      mapViewport.releasePointerCapture(e.pointerId);
+    } catch(err) {}
+  }
+});
+
+// Zabránění otevření odkazu, pokud uživatel pouze posouval mapu
+mapWrap.addEventListener('click', (e) => {
+  if (e.target.closest('.zoom-controls')) return;
+  if (isPanningOrZooming) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+}, true);
+
+// Tlačítka ovládání
+document.getElementById('zoomIn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const rect = mapWrap.getBoundingClientRect();
+  zoomToPoint(rect.width / 2, rect.height / 2, 1.3);
+});
+
+document.getElementById('zoomOut').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const rect = mapWrap.getBoundingClientRect();
+  zoomToPoint(rect.width / 2, rect.height / 2, 1 / 1.3);
+});
+
+document.getElementById('zoomReset').addEventListener('click', (e) => {
+  e.stopPropagation();
+  scale = 1;
+  pointX = 0;
+  pointY = 0;
+  updateTransform();
 });
 </script>
 </body></html>
