@@ -1,542 +1,117 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lokace</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projekt středověkého dvora hradecké královny Alžběty Richenzy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#171512;--panel:#211e19;--gold:#c99d4a;--muted:#b9ad95}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f2ead9;font-family:Georgia,"Times New Roman",serif}
-header{padding:28px 6vw 18px;border-bottom:1px solid #4a4032;background:linear-gradient(180deg,#262118,#171512)}
-h1{margin:0;font-size:clamp(2rem,5vw,4rem);letter-spacing:.06em;font-variant:small-caps}.subtitle{color:var(--muted);margin-top:8px;font-size:1.05rem}
-main{max-width:1300px;margin:auto;padding:24px}
+:root{--bg:#171512;--bg-dark:#0f0f0f;--panel:#211e19;--gold:#c99d4a;--gold-light:#f2c45f;--muted:#b9ad95;--line:#4a4032;--card-border:#8b7355}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:#f2ead9;font-family:'Playfair Display',Georgia,serif;min-height:100vh;display:flex;flex-direction:column}
 
-/* Layout: Původní nastavení */
-.map-layout{display:flex;gap:18px;align-items:flex-start}
-.map-wrap{position:relative;flex:1;min-width:0;background:#c9b889;border:10px solid #4c3b25;border-radius:8px;box-shadow:0 12px 35px #0008;overflow:hidden;line-height:0;cursor:grab;user-select:none;touch-action:none}
-.map-wrap:active{cursor:grabbing}
+/* Úvodní část */
+.hero{text-align:center;padding:64px 6vw 48px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(23,21,18,.55) 0%,rgba(23,21,18,.8) 100%),url('assets/nocni-tabor-1024x515.jpg') center 70%/cover no-repeat,#171512}
+.hero h1{font-family:'Cinzel',serif;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:.06em;font-variant:small-caps;font-weight:700}
+.hero .subtitle{color:var(--muted);margin:14px auto 0;max-width:960px;text-wrap:balance;font-size:1.1rem;font-style:italic;line-height:1.6}
+.divider{width:120px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:26px auto 0}
 
-/* Zoomovací kontejner */
-.map-viewport{width:100%;height:100%;position:relative;transform-origin:0 0;will-change:transform}
+main{max-width:1300px;width:100%;margin:auto;padding:40px 24px;flex:1}
+.intro{max-width:800px;margin:0 auto 44px;line-height:1.8;font-size:1.05rem;color:#e8dcc4;text-align:center}
+.intro p{text-align:justify;hyphens:auto;margin-bottom:1em}
+.intro p:last-child{margin-bottom:0}
+.intro h2{text-align:center;font-family:'Cinzel',serif;color:var(--gold);letter-spacing:.06em;margin-bottom:14px;font-size:1.5rem}
 
-.map-image{display:block;width:100%;height:auto;pointer-events:none}
-.map-overlay{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* Karty sekcí */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.section-card{display:flex;flex-direction:column;justify-content:space-between;gap:16px;min-height:190px;padding:24px 22px;text-decoration:none;color:#2a1f1d;background:linear-gradient(180deg,#f7f1e3 0%,#e1d3b7 100%);border:2px solid var(--card-border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.5);transition:transform .2s,border-color .2s}
+.section-card:hover,.section-card:focus{transform:translateY(-3px);border-color:#d4af37;outline:none}
+.section-card h3{font-family:'Cinzel',serif;font-size:1.25rem;font-weight:700;color:#1a110b;margin-bottom:8px}
+.section-card p{font-size:.92rem;line-height:1.5;color:#4a3b32}
+.section-card .more{font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;letter-spacing:.06em;color:#a82424}
 
-/* Ovládací tlačítka pro zoom */
-.zoom-controls{position:absolute;bottom:15px;right:15px;z-index:10;display:flex;flex-direction:column;gap:6px}
-.zoom-btn{width:36px;height:36px;background:var(--panel);border:1px solid #493f31;color:var(--gold);font-size:20px;font-weight:bold;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s;box-shadow:0 4px 10px rgba(0,0,0,0.5)}
-.zoom-btn:hover{background:#3a3021;color:#fff}
+footer{border-top:1px solid var(--line);padding:20px 24px;text-align:center;color:#888;font-size:.8rem;letter-spacing:2px;text-transform:uppercase}
 
-/* Bod na mapě */
-.point{cursor:pointer;transition:opacity .2s ease}.point:focus{outline:none}.point circle{fill:#8f3f32;stroke:#f8e8bd;stroke-width:3}.point:hover circle,.point:focus circle,.point.is-active circle{fill:#c99d4a}
-.point text{pointer-events:none;fill:#fff;font-size:17px;font-weight:bold;paint-order:stroke;stroke:#111;stroke-width:4px;stroke-linejoin:round;transition:font-size .2s ease, fill .2s ease}.castle-icon{fill:#8f3f32;stroke:#f8e8bd;stroke-width:2}.point.castle:hover .castle-icon,.point.castle:focus .castle-icon,.point.castle.is-active .castle-icon{fill:#c99d4a}
-
-/* Úprava pro všechny body (města i hrady) při najetí: světlejší barva a font zvětšený o 50 % */
-.point:hover text,.point:focus text,.point.is-active text{fill:#ff0;font-size:150%}
-
-/* Třída pro skrytí všech značek přepínačem */
-.map-overlay.hide-all .point{opacity:0;pointer-events:none}
-.map-overlay.hide-all .point.is-active{opacity:1}
-
-/* Kontejner pro menu a záložky - Původní rozměry */
-.menu-container{width:260px;flex-shrink:0;position:relative;align-self:stretch;min-height:500px}
-.location-menu{position:absolute;inset:0;background:var(--panel);border:1px solid #493f31;border-radius:8px;padding:16px;display:flex;flex-direction:column}
-
-/* Přepínač zobrazení */
-.map-toggle{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #332b21;user-select:none;cursor:pointer}
-.map-toggle input{accent-color:var(--gold);cursor:pointer}
-
-/* Záložky */
-.tab-nav{display:flex;gap:4px;margin-bottom:12px;border-bottom:1px solid #493f31;padding-bottom:8px;flex-shrink:0}
-.tab-btn{background:transparent;border:none;color:var(--muted);font-family:inherit;font-size:.95rem;font-weight:bold;padding:6px 10px;cursor:pointer;border-radius:4px;transition:all .15s}
-.tab-btn:hover{color:#e8dcc4;background:#2a251e}
-.tab-btn.is-active{color:#f2c45f;background:#3a3021}
-
-/* Obsah záložek */
-.tab-content{display:none;flex-direction:column;flex:1;overflow:hidden}
-.tab-content.is-active{display:flex}
-
-.location-menu ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;overflow-y:auto;flex:1}
-
-.location-menu ul::-webkit-scrollbar{width:6px}
-.location-menu ul::-webkit-scrollbar-track{background:#1a1713;border-radius:4px}
-.location-menu ul::-webkit-scrollbar-thumb{background:#493f31;border-radius:4px}
-.location-menu ul::-webkit-scrollbar-thumb:hover{background:#8d6b35}
-
-.location-menu a{display:block;padding:8px 10px;border-radius:5px;color:#e8dcc4;text-decoration:none;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}.location-menu a:hover,.location-menu a:focus,.location-menu a.is-active{background:#3a3021;color:#f2c45f;border-color:#8d6b35;outline:none}.location-menu a .kind{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}.legend{display:flex;gap:18px;flex-wrap:wrap;padding:14px 2px;color:var(--muted);font-size:.92rem}
-
-/* Styl pro položky družin s erby */
-#retinueList a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.retinue-icon {
-  width: 28px;
-  height: 34px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-.retinue-info {
-  display: flex;
-  flex-direction: column;
-}
-
-@media(max-width:800px){
-  .map-layout{flex-direction:column}
-  .menu-container{width:100%;height:auto;min-height:0}
-  .location-menu{position:static;inset:auto}
-  .location-menu ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow-y:visible}
-  .point text{font-size:15px}
-}
-@media(max-width:460px){.location-menu ul{grid-template-columns:1fr}main{padding:14px}}
+@media(max-width:600px){.hero{padding:44px 5vw 36px}}
 </style>
+<!-- ===================== SITE HEADER – STYLY (START) =====================
+     Sdílená hlavička s menu. Při extrakci čistého obsahu stránky
+     lze celý tento blok (až po "KONEC") bez náhrady odstranit. -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&display=swap" rel="stylesheet">
+<style id="site-header-styles">
+html{scrollbar-gutter:stable}
+.site-header{--sh-gold:#c99d4a;--sh-gold-light:#f2c45f;--sh-line:#4a4032;position:sticky;top:0;z-index:100;background:linear-gradient(180deg,#262118,#171512);border-bottom:1px solid var(--sh-line);box-shadow:0 6px 20px #0008;font-family:Georgia,"Times New Roman",serif}
+.site-header *{box-sizing:border-box}
+.site-header .header-inner{max-width:1300px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.site-header .brand{font-family:'Cinzel',serif;font-weight:700;font-size:1.15rem;letter-spacing:.08em;color:var(--sh-gold);text-decoration:none;font-variant:small-caps}
+.site-header .main-nav{display:flex;gap:6px;flex-wrap:wrap}
+.site-header .main-nav a{font-family:'Cinzel',serif;font-weight:600;font-size:.95rem;letter-spacing:.08em;color:#e8dcc4;text-decoration:none;padding:8px 16px;border-radius:5px;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.site-header .main-nav a:hover,.site-header .main-nav a:focus{background:#3a3021;color:var(--sh-gold-light);border-color:#8d6b35;outline:none}
+.site-header .main-nav a.is-active{background:#3a3021;color:var(--sh-gold-light);border-color:var(--sh-gold)}
+@media(max-width:600px){.site-header .header-inner{justify-content:center}.site-header .main-nav{justify-content:center}}
+</style>
+<!-- ===================== SITE HEADER – STYLY (KONEC) ===================== -->
 </head>
 <body>
-<header><h1>Lokace</h1><div class="subtitle">Interaktivní historická mapa sídel členů hradeckého dvora Alžběty Richenzy.</div></header>
-<main>
-<div class="map-layout">
-  <section class="map-wrap" id="mapWrap">
-    <div class="map-viewport" id="mapViewport">
-      <img class="map-image" src="assets/mapa.png" alt="Mapa českých zemí s vyznačenými městy a hrady">
-      <svg class="map-overlay" viewBox="0 0 1693 905" preserveAspectRatio="none" aria-label="Interaktivní vrstva mapy">
-        <g class="point" data-name="Praha" data-type="město" tabindex="0" aria-label="Praha, město"><circle cx="558" cy="403" r="10"/><text x="575" y="403">Praha</text></g>
-        <g class="point" data-name="Jaroměř" data-type="město" tabindex="0" aria-label="Jaroměř, město"><circle cx="823" cy="320" r="10"/><text x="803" y="320" text-anchor="end">Jaroměř</text></g>
-        <g class="point" data-name="Hradec Králové" data-type="město" tabindex="0" aria-label="Hradec Králové, město"><circle cx="810" cy="365" r="10"/><text x="827" y="365">Hradec Králové</text></g>
-        <g class="point" data-name="Chrudim" data-type="město" tabindex="0" aria-label="Chrudim, město"><circle cx="808" cy="437" r="10"/><text x="788" y="437" text-anchor="end">Chrudim</text></g>
-        <g class="point" data-name="Vysoké Mýto" data-type="město" tabindex="0" aria-label="Vysoké Mýto, město"><circle cx="868" cy="437" r="10"/><text x="885" y="437">Vysoké Mýto</text></g>
-        <g class="point" data-name="Polička" data-type="město" tabindex="0" aria-label="Polička, město"><circle cx="887" cy="502" r="10"/><text x="904" y="502">Polička</text></g>
-        <g class="point" data-name="Olomouc" data-type="město" tabindex="0" aria-label="Olomouc, město"><circle cx="1065" cy="538" r="10"/><text x="1082" y="538">Olomouc</text></g>
-        <g class="point" data-name="Brno" data-type="město" tabindex="0" aria-label="Brno, město"><circle cx="949" cy="649" r="10"/><text x="929" y="649" text-anchor="end">Brno</text></g>
-        <g class="point castle" data-name="Rabštejn" data-type="hrad" data-link="mista/rabstejn.html" tabindex="0" aria-label="Rabštejn, hrad"><path class="castle-icon"
-      d="M360 405 H376 V403 H374 V398 H376 V393 H374 V391 H375 V385 H372 V389 H369 V385 H366 V389 H363 V385 H361 V391 H362 V393 H360 V398 H362 V403 H360 Z" /><text x="352" y="405" text-anchor="end">Rabštejn</text></g>
-        <g class="point castle" data-name="Lichtenburk (Lichnice)" data-type="hrad" data-link="mista/lichtenburk.html" tabindex="0" aria-label="Lichtenburk, hrad"><path class="castle-icon"
-      d="M772 480 H788 V478 H786 V473 H788 V468 H786 V466 H787 V460 H784 V464 H778 V460 H775 V464 H773 V466 H774 V468 H772 V473 H774 V478 H772 Z" /><text x="798" y="480">Lichtenburk</text></g>
-        <g class="point castle" data-name="Žleby" data-type="hrad" data-link="mista/zleby.html" tabindex="0" aria-label="Žleby, hrad"><path class="castle-icon"
-      d="M751 480 H767 V478 H765 V473 H767 V468 H765 V466 H766 V460 H763 V464 H760 V460 H757 V464 H754 V460 H752 V466 H753 V468 H751 V473 H753 V478 H751 Z" /><text x="743" y="480" text-anchor="end">Žleby</text></g>
-        <g class="point castle" data-name="Rysov" data-type="hrad" data-link="mista/rysov.html" tabindex="0" aria-label="Rysov, hrad"><path class="castle-icon"
-      d="M915 610 H931 V608 H929 V603 H931 V598 H929 V596 H930 V590 H927 V594 H924 V590 H921 V594 H918 V590 H916 V596 H917 V598 H915 V603 H917 V608 H915 Z" /><text x="907" y="610" text-anchor="end">Rysov</text></g>
-        <g class="point castle" data-name="Lomnice" data-type="hrad" data-link="mista/lomnice.html" tabindex="0" aria-label="Lomnice, hrad">
-    <path class="castle-icon" d="M933 600 H949 V598 H947 V593 H949 V588 H947 V586 H948 V580 H945 V584 H942 V580 H939 V584 H936 V580 H934 V586 H935 V588 H933 V593 H935 V598 H933 Z" />
-    <text x="954" y="600">Lomnice</text>
-  </g>
-        <g class="point castle" data-name="Tasov" data-type="hrad" data-link="mista/tasov.html" tabindex="0" aria-label="Tasov, hrad">
-    <path class="castle-icon" d="M845 635 H861 V633 H859 V628 H861 V623 H859 V621 H860 V615 H857 V619 H854 V615 H851 V619 H848 V615 H846 V621 H847 V623 H845 V628 H847 V633 H845 Z" />
-    <text x="837" y="635" text-anchor="end">Tasov</text>
-  </g>
-        <g class="point castle" data-name="Ľúpča" data-type="hrad" data-link="mista/lupca.html" tabindex="0" aria-label="Ľúpča, hrad"><path class="castle-icon"
-      d="M1420 770 H1436 V768 H1434 V763 H1436 V758 H1434 V756 H1435 V750 H1432 V754 H1429 V750 H1426 V754 H1423 V750 H1421 V756 H1422 V758 H1420 V763 H1422 V768 H1420 Z" /><text x="1446" y="770">Ľúpča</text></g>
-        <g class="point castle" data-name="Frymburk" data-type="hrad" data-link="mista/frymburk.html" tabindex="0" aria-label="Frymburk, hrad">
-    <path class="castle-icon" d="M890 330 H906 V328 H904 V323 H906 V318 H904 V316 H905 V310 H902 V314 H899 V310 H896 V314 H893 V310 H891 V316 H892 V318 H890 Z" />
-    <text x="916" y="330">Frymburk</text>
-  </g>
-        <g class="point" data-name="Radvaň" data-type="město" tabindex="0" aria-label="Radvaň, město"><circle cx="1410" cy="780" r="10"/><text x="1390" y="780" text-anchor="end">Radvaň</text></g>
-        <g class="point" data-name="Chudobín" data-type="město" tabindex="0" aria-label="Chudobín, město"><circle cx="1027" cy="510" r="10"/><text x="1044" y="510">Chudobín</text></g>
-        <g class="point castle" data-name="Vildenberk" data-type="hrad" tabindex="0" aria-label="Vildenberk, hrad"><path class="castle-icon" d="M979 649 H995 V647 H993 V642 H995 V637 H993 V635 H994 V629 H991 V633 H988 V629 H985 V633 H982 V629 H980 V635 H981 V637 H979 V642 H981 V647 H979 Z"/><text x="1005" y="649">Vildenberk</text></g>
-        <g class="point" data-name="Nové Hrady" data-type="město" tabindex="0" aria-label="Nové Hrady, město"><circle cx="626" cy="766" r="10"/><text x="643" y="766">Nové Hrady</text></g>
-        <g class="point castle" data-name="Štěkeň" data-type="hrad" tabindex="0" aria-label="Štěkeň, hrad"><path class="castle-icon" d="M476 639 H492 V637 H490 V632 H492 V627 H490 V625 H491 V619 H488 V623 H485 V619 H482 V623 H479 V619 H477 V625 H478 V627 H476 V632 H478 V637 H476 Z"/><text x="502" y="639">Štěkeň</text></g>
-        <g class="point castle" data-name="Michalovice" data-type="hrad" tabindex="0" aria-label="Michalovice, hrad"><path class="castle-icon" d="M631 309 H647 V307 H645 V302 H647 V297 H645 V295 H646 V289 H643 V293 H640 V289 H637 V293 H634 V289 H632 V295 H633 V297 H631 V302 H633 V307 H631 Z"/><text x="623" y="309" text-anchor="end">Michalovice</text></g>
-        <g class="point castle" data-name="Dvorec u Mirošova" data-type="hrad" tabindex="0" aria-label="Dvorec u Mirošova, hrad"><path class="castle-icon" d="M414 518 H430 V516 H428 V511 H430 V506 H428 V504 H429 V498 H426 V502 H423 V498 H420 V502 H417 V498 H415 V504 H416 V506 H414 V511 H416 V516 H414 Z"/><text x="406" y="518" text-anchor="end">Dvorec u Mirošova</text></g>
-        <g class="point castle" data-name="Drštka" data-type="hrad" tabindex="0" aria-label="Drštka, hrad"><path class="castle-icon" d="M432 534 H448 V532 H446 V527 H448 V522 H446 V520 H447 V514 H444 V518 H441 V514 H438 V518 H435 V514 H433 V520 H434 V522 H432 V527 H434 V532 H432 Z"/><text x="458" y="534">Drštka</text></g>
-      </svg>
-    </div>
 
-    <!-- Ovládací tlačítka -->
-    <div class="zoom-controls">
-      <button class="zoom-btn" id="zoomIn" title="Přiblížit">+</button>
-      <button class="zoom-btn" id="zoomOut" title="Oddálit">−</button>
-      <button class="zoom-btn" id="zoomReset" title="Obnovit pohled">R</button>
-    </div>
-  </section>
-
-  <div class="menu-container">
-    <aside class="location-menu" aria-label="Seznam lokalit a družin">
-      <label class="map-toggle">
-        <input type="checkbox" id="hideMapMarkers">
-        <span>Skrýt značky na mapě</span>
-      </label>
-
-      <nav class="tab-nav">
-        <button class="tab-btn is-active" data-tab="tab-locations">Města a hrady</button>
-        <button class="tab-btn" data-tab="tab-retinues">Družiny</button>
-      </nav>
-
-      <div id="tab-locations" class="tab-content is-active">
-        <ul id="locationList"></ul>
-      </div>
-
-      <div id="tab-retinues" class="tab-content">
-        <ul id="retinueList">
-          <li>
-            <a href="#" data-targets="Jaroměř,Polička,Hradec Králové,Vysoké Mýto,Chrudim">
-              <img src="assets/richenza-erb.png" alt="Erb Alžběta Richenza" class="retinue-icon">
-              <span class="retinue-info">
-                Alžběta Richenza<span class="kind">Královna česká a polská</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="#" data-targets="Frymburk, Hradec Králové">
-              <img src="assets/posadow-erb.png" alt="Erb Petr z Posadowa" class="retinue-icon">
-              <span class="retinue-info">
-                Petr z Posadowa<span class="kind">Stolník hradeckého dvora</span>
-              </span>
-            </a>
-          </li>
-
-<li>
-            <a href="#" data-targets="Dvorec u Mirošova,Drštka">
-              <img src="assets/ronsperk-erb.png" alt="Erb Dobrohost z Ronšperka" class="retinue-icon">
-              <span class="retinue-info">
-                Dobrohost z Ronšperka<span class="kind">Komorník hradecké královny</span>
-              </span>
-            </a>
-          </li>
-<li>
-            <a href="#" data-targets="Rabštejn, Jaroměř">
-              <img src="assets/rabstejn-erb.png" alt="Erb Jiří z Rabštejna" class="retinue-icon">
-              <span class="retinue-info">
-                Jiří z Rabštejna<span class="kind">Purkrabí na hradě Jaroměři</span>
-              </span>
-            </a>
-          </li>
-<li>
-            <a href="#" data-targets="Vildenberk">
-              <img src="assets/vildenberk-erb.png" alt="Erb Vladimír z Vildenberka" class="retinue-icon">
-              <span class="retinue-info">
-                Vladimír z Vildenberka<span class="kind">Hejtman královniny stráže</span>
-              </span>
-            </a>
-          </li>
-<li>
-            <a href="#" data-targets="Lomnice, Tasov">
-              <img src="assets/lomnice-erb.png" alt="Erb Pánové z Tasova a Lomnice" class="retinue-icon">
-              <span class="retinue-info">
-                Pánové z Tasova a Lomnice<span class="kind">Vznat - Chrudimský purkrabí a velitel královniných vojsk, Jan - zpovědník</span>
-              </span>
-            </a>
-          </li>
-<li>
-            <a href="#" data-targets="">
-              <img src="assets/bile-erb.png" alt="Erb Martin z Bílé" class="retinue-icon">
-              <span class="retinue-info">
-                Martin z Bílé<span class="kind">Podmaršálek hradecké královny</span>
-              </span>
-            </a>
-          </li>
-
-<li>
-            <a href="#" data-targets="">
-              <img src="assets/haro-erb.png" alt="Erb don Iňigo Díaz de Haro" class="retinue-icon">
-              <span class="retinue-info">
-                don Iňigo Díaz de Haro<span class="kind">Velvyslanec království Kastílie a León</span>
-              </span>
-            </a>
-          </li>
-
-          <li>
-            <a href="#" data-targets="">
-              <img src="assets/nemcice-erb.png" alt="Erb Svatomír z Němčic" class="retinue-icon">
-              <span class="retinue-info">
-                Svatomír z Němčic<span class="kind">Královský lovčí</span>
-              </span>
-            </a>
-          </li>
-
-     <li>
-            <a href="#" data-targets="Chudobín">
-              <img src="assets/chudobin-erb.png" alt="Erb Radegunda Nemravová z Chudobína" class="retinue-icon">
-              <span class="retinue-info">
-                Radegunda Nemravová z Chudobína<span class="kind">Sestra Kordula</span>
-              </span>
-            </a>
-          </li>
-          
-          <li>
-            <a href="#" data-targets="Nové Hrady">
-              <img src="assets/novehrady-erb.png" alt="Erb Smil z Nových Hradů" class="retinue-icon">
-              <span class="retinue-info">
-                Smil z Nových Hradů<span class="kind"></span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="#" data-targets="Michalovice">
-              <img src="assets/novehrady-erb.png" alt="Erb Eleanor z Michalovic" class="retinue-icon">
-              <span class="retinue-info">
-                Eleanor z Michalovic<span class="kind"></span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="#" data-targets="Štěkeň">
-              <img src="assets/steken-erb.png" alt="Erb Jošt ze Štěkně" class="retinue-icon">
-              <span class="retinue-info">
-                Jošt ze Štěkně<span class="kind"></span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="#" data-targets="Žleby,Lichtenburk (Lichnice)">
-              <img src="assets/lichtenburk-erb.png" alt="Erb Matylda ze Žleb a Lichtenburka" class="retinue-icon">
-              <span class="retinue-info">
-                Matylda ze Žleb a Lichtenburka<span class="kind">Šlechtična</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="#" data-targets="">
-              <img src="assets/sesovice-erb.png" alt="Erb František z Šešovic" class="retinue-icon">
-              <span class="retinue-info">
-                František z Šešovic<span class="kind"></span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="#" data-targets="Radvaň, Ľúpča">
-              <img src="assets/radvan-erb.png" alt="Erb Tomáš z Radvaně" class="retinue-icon">
-              <span class="retinue-info">
-                Tomáš z Radvaně<span class="kind">Kastelán na hradě Ľúpča</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="#" data-targets="">
-              <img src="assets/kravare-erb.png" alt="Erb Jan z Kravař" class="retinue-icon">
-              <span class="retinue-info">
-                Jan z Kravař<span class="kind"></span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="#" data-targets="Rysov, Jaroměř">
-              <img src="assets/rysov-erb.png" alt="Erb Richard z Rysova" class="retinue-icon">
-              <span class="retinue-info">
-                Richard z Rysova<span class="kind">Rychtář Jaroměřský</span>
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </aside>
+<!-- ===================== SITE HEADER – MENU (START) =====================
+     Sdílená hlavička s menu. Při extrakci čistého obsahu stránky
+     lze celý tento blok (až po "KONEC") bez náhrady odstranit. -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">Dvůr hradecké královny Alžběty Richenzy</a>
+    <nav class="main-nav" aria-label="Hlavní menu">
+      <a href="index.html" class="is-active" aria-current="page">Projekt</a>
+      <a href="lokace.html">Lokace</a>
+      <a href="struktura.html">Struktura</a>
+      <a href="galerie.html">Galerie</a>
+    </nav>
   </div>
-</div>
-<div class="legend"><span>● bod = lokalita</span><span>Najetím zvýrazníš bod a název</span><span>Kliknutím otevřeš detail</span></div>
+</header>
+<!-- ===================== SITE HEADER – MENU (KONEC) ===================== -->
 
+<!-- ===================== OBSAH STRÁNKY (START) ===================== -->
+
+<section class="hero">
+  <h2>Dvůr královny Alžběty Richenzy</h2>
+  <p class="subtitle">Projekt středověkého dvora hradecké královny Alžběty Richenzy je postavený na myšlence pokusit se znovu oživit výstavní dvůr této panovnice, která byla podvakráte českou a polskou královnou.</p>
+  <div class="divider"></div>
+</section>
+
+<main>
+  <div class="intro">
+    <h2>O projektu</h2>
+    <p>Dvorem jsou myšleni lidé kteří ho tvoří, tedy šlechtici, duchovní, měšťané a služebníci, včetně hostů. Znovuvytvořením dobové hierarchie se pokoušíme rekonstruovat mentalitu středověkých lidí všech společenských vrstev. Zajímá nás problematika všedního života i politika. Zabýváme se příčinami významných politických událostí, jejich důsledky a dopadem na jednotlivé společenské vrstvy. Upřednostňujeme rekonstrukci mentalit před věrnými rekonstrukcemi reálií.</p>
+    <p>Hradecká královna, která je nám patronkou i inspirací, je skutečnou historickou postavou, která výrazně ovlivňovala dění v Českém království v období let 1300–1335. Její celý titul zněl: Alžběta, z Boží milosti královna česká a polská (podle pečeti z roku 1303), resp. Alžběta, z Boží milosti česká a polská dvojkrálovna (podle pečetí z let 1306–1307, 1323–1335).</p>
+    <p>Alžběta Richenza se stala českou a polskou královnou roku 1303. Byla dvakrát krátce provdána a po jejích zesnulých manželech jí zůstalo bohaté vdovské věno v podobě pěti významných královských měst, tedy Hradce Králové, Chrudimi, Jaroměře, Vysokého Mýta a Poličky. Krátce po svém druhém ovdovění se jako dvacetiletá roku 1308 ujala vlády ve svých věnných městech, z nichž si za své sídlo zvolila Hradec.</p>
+    <p>Vedla zde honosný a nákladný dvůr, jenž zastiňoval i ten pražský. Častými hosty na jejím dvoře byli nejenom přední šlechtici země v čele s nejmocnějším mužem království panem Jindřichem z Lipé, ale i okolní knížata, z nichž nejvýznamnějším byl rakouský vévoda a pozdější římský král Fridrich Sličný a slezský vévoda Jindřich I. Javorský.</p>
+    <p>Skromnost dobových pramenů, jež si navíc mnohdy vzájemně odporují a z nichž můžeme k tomuto období Richenziny vlády ve východních Čechách čerpat, nám leckdy neumožňuje hodnověrnou rekonstrukci některých událostí, poměrů, osob a jejich postavení v blízkém okolí královny a otevírá tak prostor k hypotézám. Jsme si vědomi, že provést skutečně věrnou rekonstrukci jejího dvora není v našich silách, naším přáním je tedy alespoň se mu přiblížit.</p>
+    <p>Středověký turnaj byl vždy mimořádnou událostí i velkým svátkem a to pro všechny zúčastněné bez ohledu na jejich sociální postavení ve společnosti. Turnaje byly vícedenními oslavami, doprovázenými kromě samotných klání i mnohými ceremoniemi, slavnostními mšemi, hostinami, plesy a dalšími oslavami. O jejich podobě nás informují dobové kroniky a turnajská pojednání, z nichž nejznámější a nejkomplexnější je pojednání francouzského prince Reného d´Anjou z 15. století.</p>
+    <p>Toto dílo je praktickým shrnutím turnajských ceremonií, disciplín a pravidel, vytvářející dokonalý manuál pro toho, kdo chce turnaj uspořádat. I my sami jsme z něho výrazně čerpali, abychom si v praxi ověřili, že tato práce má neocenitelnou hodnotu, protože řeší všechno co s turnajem souvisí.</p>
+    <p>V souvislosti s projektem hradeckého dvora jsme se před lety rozhodli pokusit se v našich podmínkách oživit turnaj v jeho pěší podobě a pojmout ho nejenom jako poměřování sil bojujících, ale především jako dvorskou kratochvíli. Jsme si vědomi faktu, že naše možnosti jsou výrazně limitované a že i samotná rekonstrukce je v mnoha ohledech toliko symbolická.</p>
+    <p>Cílem projektu je rekonstruovat rytířský turnaj podle shrnutých pravidel Reného d´Anjou s ohledem na jeho pěší pojetí. Tj. využít jednotlivé ceremonie zahrnující klíčové záležitosti turnaje, aby bylo zjevné, že turnaj byl nejenom vrcholnou dvorskou kratochvíli, ale i významnou společenskou a politickou událostí. Chceme motivovat účastníky projektu, aby se na turnaj oděli do šatů odpovídajících módě v rozmezí let 1275–1330 a jednotlivým sociálním vrstvám které v projektu představují.</p>
+    <p>V případě bojovníků všech společenských tříd, tedy od velmožů, přes rytíře a družiníky až po prosté oděnce, motivovat účastníky, aby se vybavili adekvátními zbrojemi a zbraněmi. V neposlední řadě chceme rekonstruovat táborový život, přímo související s turnajskou kratochvílí, opět s ohledem na jednotlivé sociální vrstvy jež se ho účastnily (od velmožů po služebníky a řemeslníky). S tím souvisí i pořízení potřebného vybavení ve smyslu dobových stanů, stolů, stolního nádobí, předmětů denní potřeby, atd. Při rekonstrukci hmotné kultury je pro nás prioritní správný vzhled. Užití dobově věrných materiálů či výrobních postupů při jejich zhotovení je pro nás až druhořadé.</p>
+    <p>Každoroční turnaj hradeckého dvora je pořádaný nejenom jako pokus o konstrukci dvorské kratochvíle, ale i jako přátelské setkání a měření sil. Každý bojovník, který se ho účastní, stvrzuje slavnostní přísahou respektování turnajských pravidel a soudcovství dam. Urozené dámy jsou okrasou i středobodem této kratochvíle. Mají právo zvolit a odměnit vítěze jednotlivých klání, stejně jako i další bojovníky, kteří je zaujali. Současně jim náleží právo svým soudem potrestat zjevnou křivdu, spáchanou na kolbišti. V souvislosti s tím se od nich, stejně jako od velmožů, očekává reprezentativní vystupování.</p>
+  </div>
+
+  <div class="cards">
+    <a class="section-card" href="lokace.html">
+      <div><h3>Lokace</h3><p>Interaktivní historická mapa měst a hradů spojených s členy dvora.</p></div>
+      <span class="more">Otevřít mapu →</span>
+    </a>
+    <a class="section-card" href="struktura.html">
+      <div><h3>Struktura</h3><p>Schéma hradeckého dvora a vztahů mezi jeho členy.</p></div>
+      <span class="more">Zobrazit strukturu →</span>
+    </a>
+    <a class="section-card" href="galerie.html">
+      <div><h3>Galerie</h3><p>Obrazový materiál k projektu.</p></div>
+      <span class="more">Procházet galerii →</span>
+    </a>
+  </div>
 </main>
-<script>
-const points = [...document.querySelectorAll('.point')];
-const locationList = document.getElementById('locationList');
-const mapOverlay = document.querySelector('.map-overlay');
-const hideMapMarkers = document.getElementById('hideMapMarkers');
 
-hideMapMarkers.addEventListener('change', (e) => {
-  mapOverlay.classList.toggle('hide-all', e.target.checked);
-});
+<footer>Dvůr královny Alžběty Richenzy</footer>
 
-const tabBtns = document.querySelectorAll('.tab-btn');
-const tabContents = document.querySelectorAll('.tab-content');
-
-tabBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    tabBtns.forEach(b => b.classList.remove('is-active'));
-    tabContents.forEach(c => c.classList.remove('is-active'));
-    
-    btn.classList.add('is-active');
-    document.getElementById(btn.dataset.tab).classList.add('is-active');
-  });
-});
-
-function setPointsActive(namesArray, active) {
-  namesArray.forEach(name => {
-    const trimmedName = name.trim();
-    const point = points.find(p => p.dataset.name === trimmedName);
-    if (point) point.classList.toggle('is-active', active);
-  });
-}
-
-function setActiveLocation(name, active) {
-  setPointsActive([name], active);
-  const link = [...locationList.querySelectorAll('a')].find(a => a.dataset.name === name);
-  if (link) {
-    link.classList.toggle('is-active', active);
-    if (active) link.setAttribute('aria-current', 'true');
-    else link.removeAttribute('aria-current');
-  }
-}
-
-points.sort((a, b) => a.dataset.name.localeCompare(b.dataset.name, 'cs'));
-
-points.forEach(p => {
-  const name = p.dataset.name;
-  const link = document.createElement('a');
-  link.href = p.dataset.link || '#';
-  link.dataset.name = name;
-  link.innerHTML = `${name}<span class="kind">${p.dataset.type === 'hrad' ? 'Hrad' : 'Město'}</span>`;
-  
-  link.addEventListener('mouseenter', () => setActiveLocation(name, true));
-  link.addEventListener('mouseleave', () => setActiveLocation(name, false));
-  link.addEventListener('focus', () => setActiveLocation(name, true));
-  link.addEventListener('blur', () => setActiveLocation(name, false));
-  link.addEventListener('click', event => {
-    if (!p.dataset.link) {
-      event.preventDefault();
-      p.focus();
-    }
-  });
-  locationList.appendChild(document.createElement('li')).appendChild(link);
-
-  p.addEventListener('mouseenter', () => setActiveLocation(name, true));
-  p.addEventListener('mouseleave', () => setActiveLocation(name, false));
-  p.addEventListener('focus', () => setActiveLocation(name, true));
-  p.addEventListener('blur', () => setActiveLocation(name, false));
-  p.addEventListener('click', () => { if (p.dataset.link) location.href = p.dataset.link; });
-  p.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); p.click(); }
-  });
-});
-
-const retinueLinks = document.querySelectorAll('#retinueList a');
-
-retinueLinks.forEach(link => {
-  const targets = link.dataset.targets ? link.dataset.targets.split(',') : [];
-
-  const handleHover = (active) => {
-    link.classList.toggle('is-active', active);
-    if (targets.length > 0) {
-      setPointsActive(targets, active);
-    }
-  };
-
-  link.addEventListener('mouseenter', () => handleHover(true));
-  link.addEventListener('mouseleave', () => handleHover(false));
-  link.addEventListener('focus', () => handleHover(true));
-  link.addEventListener('blur', () => handleHover(false));
-  
-  link.addEventListener('click', e => e.preventDefault());
-});
-
-/* --- LOGIKA DLA ZOOM A PAN (POSUNU) --- */
-const mapWrap = document.getElementById('mapWrap');
-const mapViewport = document.getElementById('mapViewport');
-
-const MIN_SCALE = 1;
-const MAX_SCALE = 5;
-
-let scale = 1;
-let pointX = 0;
-let pointY = 0;
-let startX = 0;
-let startY = 0;
-let isDragging = false;
-let isPanningOrZooming = false;
-let downX = 0;
-let downY = 0;
-
-function updateTransform() {
-  scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
-
-  if (scale === MIN_SCALE) {
-    pointX = 0;
-    pointY = 0;
-  } else {
-    const rect = mapWrap.getBoundingClientRect();
-    const minTranslateX = rect.width * (1 - scale);
-    const minTranslateY = rect.height * (1 - scale);
-
-    pointX = Math.min(Math.max(minTranslateX, pointX), 0);
-    pointY = Math.min(Math.max(minTranslateY, pointY), 0);
-  }
-
-  mapViewport.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
-}
-
-function zoomToPoint(cx, cy, factor) {
-  const newScale = Math.min(Math.max(MIN_SCALE, scale * factor), MAX_SCALE);
-  if (newScale === scale) return; // Měřítko dosáhlo limitu, neposouvat mapu
-
-  const xs = (cx - pointX) / scale;
-  const ys = (cy - pointY) / scale;
-
-  scale = newScale;
-  pointX = cx - xs * scale;
-  pointY = cy - ys * scale;
-
-  updateTransform();
-}
-
-// Zoom kolečkem myši
-mapWrap.addEventListener('wheel', (e) => {
-  e.preventDefault();
-  const rect = mapWrap.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
-
-  const factor = -e.deltaY > 0 ? 1.2 : 0.8;
-  zoomToPoint(mouseX, mouseY, factor);
-}, { passive: false });
-
-// Posun (Pan) - Dragging
-mapWrap.addEventListener('pointerdown', (e) => {
-  if (e.target.closest('.zoom-controls')) return;
-
-  isDragging = true;
-  isPanningOrZooming = false;
-  downX = e.clientX;
-  downY = e.clientY;
-  startX = e.clientX - pointX;
-  startY = e.clientY - pointY;
-  // setPointerCapture se zde záměrně nevolá, jinak by se click nedostal na bod (hrad)
-});
-
-mapWrap.addEventListener('pointermove', (e) => {
-  if (!isDragging) return;
-  if (!isPanningOrZooming) {
-    if (Math.hypot(e.clientX - downX, e.clientY - downY) < 4) return;
-    isPanningOrZooming = true;
-    try { mapViewport.setPointerCapture(e.pointerId); } catch (err) {}
-  }
-  pointX = e.clientX - startX;
-  pointY = e.clientY - startY;
-  updateTransform();
-});
-
-mapWrap.addEventListener('pointerup', (e) => {
-  if (isDragging) {
-    isDragging = false;
-    try {
-      mapViewport.releasePointerCapture(e.pointerId);
-    } catch(err) {}
-  }
-});
-
-// Zabránění otevření odkazu, pokud uživatel pouze posouval mapu
-mapWrap.addEventListener('click', (e) => {
-  if (e.target.closest('.zoom-controls')) return;
-  if (isPanningOrZooming) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-}, true);
-
-// Tlačítka ovládání
-document.getElementById('zoomIn').addEventListener('click', (e) => {
-  e.stopPropagation();
-  const rect = mapWrap.getBoundingClientRect();
-  zoomToPoint(rect.width / 2, rect.height / 2, 1.3);
-});
-
-document.getElementById('zoomOut').addEventListener('click', (e) => {
-  e.stopPropagation();
-  const rect = mapWrap.getBoundingClientRect();
-  zoomToPoint(rect.width / 2, rect.height / 2, 1 / 1.3);
-});
-
-document.getElementById('zoomReset').addEventListener('click', (e) => {
-  e.stopPropagation();
-  scale = 1;
-  pointX = 0;
-  pointY = 0;
-  updateTransform();
-});
-</script>
-</body></html>
+<!-- ===================== OBSAH STRÁNKY (KONEC) ===================== -->
+</body>
+</html>
