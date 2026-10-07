@@ -67,7 +67,7 @@
                 46px var(--gap-y-half) /* 1. řádek -> poloviční mezera (20px) */
                 46px var(--gap-y)      /* 2. řádek -> zvětšená mezera (40px) */
                 46px var(--gap-y)      /* 3. řádek -> zvětšená mezera (40px) */
-                46px var(--gap-y-half) /* 4. řádek -> poloviční mezera (20px) - maršálek / podmaršálek */
+                46px var(--gap-y-half) /* 4. řádek -> poloviční mezera (20px) - podmaršálek */
                 46px var(--gap-y)      /* 5. řádek -> zvětšená mezera (40px) */
                 46px var(--gap-y-half) /* 6. řádek -> poloviční mezera (20px) - purkrabí / rychtáři */
                 46px;                  /* 7. řádek */
@@ -256,9 +256,7 @@
             font-size: 0.75rem;
         }
     </style>
-<!-- ===================== SITE HEADER – STYLY (START) =====================
-     Sdílená hlavička s menu. Při extrakci čistého obsahu stránky
-     lze celý tento blok (až po "KONEC") bez náhrady odstranit. -->
+<!-- ===================== SITE HEADER – STYLY (START) ===================== -->
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&display=swap" rel="stylesheet">
 <style id="site-header-styles">
 html{scrollbar-gutter:stable}
@@ -271,8 +269,6 @@ html{scrollbar-gutter:stable}
 .site-header .main-nav a:hover,.site-header .main-nav a:focus{background:#3a3021;color:var(--sh-gold-light);border-color:#8d6b35;outline:none}
 .site-header .main-nav a.is-active{background:#3a3021;color:var(--sh-gold-light);border-color:var(--sh-gold)}
 @media(max-width:600px){.site-header .header-inner{justify-content:center}.site-header .main-nav{justify-content:center}}
-/* Úprava rozložení pro tuto stránku: body je zde flex kontejner a hlavní obsah
-   má výšku 100vh. Tyto řádky platí jen s hlavičkou a zmizí s ní. */
 body{flex-direction:column;align-items:center;overflow-y:auto}
 .site-header{width:100%}
 main{width:100%;height:auto;flex:1 0 auto}
@@ -280,9 +276,7 @@ main{width:100%;height:auto;flex:1 0 auto}
 <!-- ===================== SITE HEADER – STYLY (KONEC) ===================== -->
 </head>
 <body>
-<!-- ===================== SITE HEADER – MENU (START) =====================
-     Sdílená hlavička s menu. Při extrakci čistého obsahu stránky
-     lze celý tento blok (až po "KONEC") bez náhrady odstranit. -->
+<!-- ===================== SITE HEADER – MENU (START) ===================== -->
 <header class="site-header">
   <div class="header-inner">
     <a class="brand" href="struktura.html">Interaktivní přehled struktury dvora</a>
@@ -290,7 +284,7 @@ main{width:100%;height:auto;flex:1 0 auto}
       <a href="index.html">Projekt</a>
       <a href="lokace.html">Lokace</a>
       <a href="struktura.html" class="is-active" aria-current="page">Struktura</a>
-<a href="pravidla.html">Pravidla</a>
+      <a href="pravidla.html">Pravidla</a>
       <a href="galerie.html">Galerie</a>
     </nav>
   </div>
@@ -304,9 +298,8 @@ main{width:100%;height:auto;flex:1 0 auto}
             <!-- SVG vrstva pro propojení -->
             <svg class="connections-layer" id="svgLayer">
                 <path id="line-queen-commander" />
-                <path id="line-commander-marshal" />
+                <path id="line-commander-submarshal" />
                 <path id="line-commander-burgraves" />
-                <path id="line-marshal-submarshal" />
                 <path id="line-burgrave-reeve-1" />
                 <path id="line-burgrave-reeve-2" />
                 <path id="line-burgrave-reeve-3" />
@@ -360,8 +353,8 @@ main{width:100%;height:auto;flex:1 0 auto}
             <div class="empty-cell" style="grid-row: 5;"></div>
 
             <!-- ŘÁDEK 4 (grid-row: 7) -->
-            <div id="card-marshal" class="card disabled" style="grid-row: 7;">
-                <div class="role">Maršálek</div><div class="name">—</div>
+            <div id="card-submarshal" class="card" style="grid-row: 7;" onclick="showDetail('Martin z Bílé', 'Podmaršálek', 'Zástupce velitele vojsk podřízený veliteli vojsk.')">
+                <div class="role">Podmaršálek</div><div class="name">Martin z Bílé</div>
             </div>
             <div class="empty-cell" style="grid-row: 7;"></div>
             <div class="card" style="grid-row: 7;" onclick="showDetail('Vladimír z Vildenberka', 'Hejtman král. stráže', 'Velitel královské stráže podřízený hofmistrovi.')">
@@ -381,9 +374,7 @@ main{width:100%;height:auto;flex:1 0 auto}
             </div>
 
             <!-- ŘÁDEK 5 (grid-row: 9) -->
-            <div id="card-submarshal" class="card" style="grid-row: 9;" onclick="showDetail('Martin z Bílé', 'Podmaršálek', 'Zástupce maršálka podřízený veliteli vojsk.')">
-                <div class="role">Podmaršálek</div><div class="name">Martin z Bílé</div>
-            </div>
+            <div class="empty-cell" style="grid-row: 9;"></div>
             <div class="empty-cell" style="grid-row: 9;"></div>
             <div class="card" style="grid-row: 9;" onclick="showDetail('Jan řečený Loupežník', 'Seržant král. stráže', 'Velitel oddílu královské stráže podřízený hejtmanovi.')">
                 <div class="role">Seržant král. stráže</div><div class="name">Jan ř. Loupežník</div>
@@ -473,7 +464,6 @@ main{width:100%;height:auto;flex:1 0 auto}
 
             const queen = getCoords('card-queen');
             const commander = getCoords('card-commander');
-            const marshal = getCoords('card-marshal');
             const submarshal = getCoords('card-submarshal');
             
             const burgraveHradec = getCoords('card-burgrave-hradec');
@@ -493,12 +483,12 @@ main{width:100%;height:auto;flex:1 0 auto}
             const pathQueenCommander = `M ${queen.centerX} ${queen.bottom} L ${queen.centerX} ${midY1} L ${commander.centerX} ${midY1} L ${commander.centerX} ${commander.top}`;
             document.getElementById('line-queen-commander').setAttribute('d', pathQueenCommander);
 
-            // 2. Velitel vojsk -> Maršálek
-            const midY2 = commander.bottom + (marshal.top - commander.bottom) / 2;
-            const pathCommanderMarshal = `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midY2} L ${marshal.centerX} ${midY2} L ${marshal.centerX} ${marshal.top}`;
-            document.getElementById('line-commander-marshal').setAttribute('d', pathCommanderMarshal);
+            // 2. Velitel vojsk -> Podmaršálek
+            const midY2 = commander.bottom + (submarshal.top - commander.bottom) / 2;
+            const pathCommanderSubmarshal = `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midY2} L ${submarshal.centerX} ${midY2} L ${submarshal.centerX} ${submarshal.top}`;
+            document.getElementById('line-commander-submarshal').setAttribute('d', pathCommanderSubmarshal);
 
-            // 3. Velitel vojsk -> Všichni purkrabí (rozvětvení UPROSTŘED mezery mezi 5. a 6. řádkem)
+            // 3. Velitel vojsk -> Všichni purkrabí
             const midGap56Y = submarshal.bottom + (burgraveHradec.top - submarshal.bottom) / 2;
             const pathCommanderBurgraves = 
                 `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midGap56Y} ` +
@@ -509,27 +499,23 @@ main{width:100%;height:auto;flex:1 0 auto}
                 `M ${commander.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${burgraveMyto.top}`;
             document.getElementById('line-commander-burgraves').setAttribute('d', pathCommanderBurgraves);
 
-            // 4. Maršálek -> Podmaršálek
-            const pathMarshalSubmarshal = `M ${marshal.centerX} ${marshal.bottom} L ${submarshal.centerX} ${submarshal.top}`;
-            document.getElementById('line-marshal-submarshal').setAttribute('d', pathMarshalSubmarshal);
-
-            // 5. Purkrabí Hradecký -> Rychtář Hradecký
+            // 4. Purkrabí Hradecký -> Rychtář Hradecký
             const pathBurgraveReeve1 = `M ${burgraveHradec.centerX} ${burgraveHradec.bottom} L ${reeveHradec.centerX} ${reeveHradec.top}`;
             document.getElementById('line-burgrave-reeve-1').setAttribute('d', pathBurgraveReeve1);
 
-            // 6. Purkrabí Chrudimský -> Rychtář Chrudimský
+            // 5. Purkrabí Chrudimský -> Rychtář Chrudimský
             const pathBurgraveReeve2 = `M ${burgraveChrudim.centerX} ${burgraveChrudim.bottom} L ${reeveChrudim.centerX} ${reeveChrudim.top}`;
             document.getElementById('line-burgrave-reeve-2').setAttribute('d', pathBurgraveReeve2);
 
-            // 7. Purkrabí Jaroměřský -> Rychtář Jaroměřský
+            // 6. Purkrabí Jaroměřský -> Rychtář Jaroměřský
             const pathBurgraveReeve3 = `M ${burgraveJaromer.centerX} ${burgraveJaromer.bottom} L ${reeveJaromer.centerX} ${reeveJaromer.top}`;
             document.getElementById('line-burgrave-reeve-3').setAttribute('d', pathBurgraveReeve3);
 
-            // 8. Purkrabí Poličský -> Rychtář Poličský
+            // 7. Purkrabí Poličský -> Rychtář Poličský
             const pathBurgraveReeve4 = `M ${burgravePolicka.centerX} ${burgravePolicka.bottom} L ${reevePolicka.centerX} ${reevePolicka.top}`;
             document.getElementById('line-burgrave-reeve-4').setAttribute('d', pathBurgraveReeve4);
 
-            // 9. Purkrabí Mýtský -> Rychtář Mýtský
+            // 8. Purkrabí Mýtský -> Rychtář Mýtský
             const pathBurgraveReeve5 = `M ${burgraveMyto.centerX} ${burgraveMyto.bottom} L ${reeveMyto.centerX} ${reeveMyto.top}`;
             document.getElementById('line-burgrave-reeve-5').setAttribute('d', pathBurgraveReeve5);
         }
