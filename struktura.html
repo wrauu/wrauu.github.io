@@ -28,6 +28,7 @@
             color: #ffffff;
             font-family: 'Playfair Display', serif;
             display: flex;
+	    flex-direction: column; /* <-- PŘIDAT TENTO ŘÁDEK */
             justify-content: center;
             min-height: 100vh;
             overflow-x: hidden;
@@ -274,9 +275,43 @@
             font-size: 0.75rem;
         }
     </style>
+<!-- ===================== SITE HEADER – STYLY (START) =====================
+     Sdílená hlavička s menu. Při extrakci čistého obsahu stránky
+     lze celý tento blok (až po "KONEC") bez náhrady odstranit. -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&display=swap" rel="stylesheet">
+<style id="site-header-styles">
+html{scrollbar-gutter:stable}
+.site-header{--sh-gold:#c99d4a;--sh-gold-light:#f2c45f;--sh-line:#4a4032;position:sticky;top:0;z-index:100;background:linear-gradient(180deg,#262118,#171512);border-bottom:1px solid var(--sh-line);box-shadow:0 6px 20px #0008;font-family:Georgia,"Times New Roman",serif}
+.site-header *{box-sizing:border-box}
+.site-header .header-inner{max-width:1300px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.site-header .brand{font-family:'Cinzel',serif;font-weight:700;font-size:1.15rem;letter-spacing:.08em;color:var(--sh-gold);text-decoration:none;font-variant:small-caps}
+.site-header .main-nav{display:flex;gap:6px;flex-wrap:wrap}
+.site-header .main-nav a{font-family:'Cinzel',serif;font-weight:600;font-size:.95rem;letter-spacing:.08em;color:#e8dcc4;text-decoration:none;padding:8px 16px;border-radius:5px;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.site-header .main-nav a:hover,.site-header .main-nav a:focus{background:#3a3021;color:var(--sh-gold-light);border-color:#8d6b35;outline:none}
+.site-header .main-nav a.is-active{background:#3a3021;color:var(--sh-gold-light);border-color:var(--sh-gold)}
+@media(max-width:600px){.site-header .header-inner{justify-content:center}.site-header .main-nav{justify-content:center}}
+</style>
+<!-- ===================== SITE HEADER – STYLY (KONEC) ===================== -->
 </head>
 <body>
+<!-- ===================== SITE HEADER – MENU (START) =====================
+     Sdílená hlavička s menu. Při extrakci čistého obsahu stránky
+     lze celý tento blok (až po "KONEC") bez náhrady odstranit. -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="lokace.html">Interaktivní historická mapa sídel členů dvora</a>
+    <nav class="main-nav" aria-label="Hlavní menu">
+      <a href="index.html">Projekt</a>
+      <a href="lokace.html" class="is-active" aria-current="page">Lokace</a>
+      <a href="struktura.html">Struktura</a>
+<a href="pravidla.html">Pravidla</a>
+      <a href="galerie.html">Galerie</a>
+    </nav>
+  </div>
+</header>
+<!-- ===================== SITE HEADER – MENU (KONEC) ===================== -->
 
+<!-- ===================== OBSAH STRÁNKY (START) ===================== -->
     <main>
         <header>
             <p>Interaktivní přehled struktury dvora</p>
