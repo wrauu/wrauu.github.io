@@ -155,3 +155,481 @@
 
         .card.disabled:hover {
             transform: none;
+            border-color: var(--card-border);
+        }
+
+        .card .role {
+            font-size: 0.68rem;
+            font-weight: bold;
+            color: #4a3b32;
+            line-height: 1.1;
+        }
+
+        .card .name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #1a110b;
+            text-decoration: underline;
+            text-decoration-color: rgba(0,0,0,0.3);
+            line-height: 1.1;
+            margin-top: 1px;
+        }
+
+        .card.icon-card {
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            text-align: left;
+            padding: 3px 8px;
+        }
+
+        .card-icon {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            background: #8b0000;
+            color: #f3ebd7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        /* Prázdné buňky pro udržení mřížky */
+        .empty-cell {
+            width: 170px;
+            height: 46px;
+        }
+
+        /* Pop-up detail (fixní vůči obrazovce) */
+        .popover {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 280px;
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 8px;
+            padding: 15px;
+            color: var(--text-dark);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            z-index: 100;
+        }
+
+        .popover.active { display: block; }
+
+        .popover-header {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .popover-avatar {
+            width: 45px;
+            height: 45px;
+            background: #2a1f1d;
+            border-radius: 50%;
+            border: 2px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .popover-text {
+            font-size: 0.78rem;
+            line-height: 1.3;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .btn-more {
+            display: block;
+            width: 100%;
+            background: var(--accent-red);
+            color: #fff;
+            text-align: center;
+            padding: 6px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            width: 100%;
+            color: #666;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <header>
+            <p>Interaktivní přehled struktury dvora</p>
+            <span class="scroll-hint">↔ Posouvejte do stran pro zobrazení celého stromu</span>
+        </header>
+
+        <div class="tree-wrapper">
+            <div class="court-grid" id="courtGrid">
+                <!-- SVG vrstva pro propojení -->
+                <svg class="connections-layer" id="svgLayer">
+                    <!-- Všechny čáry maji jednotný styl z definice CSS .connections-layer path -->
+                    <path id="line-queen-doctor-confessor" />
+                    <path id="line-queen-main-branch" />
+                    <path id="line-queen-lady" />
+                    <path id="line-queen-captain" />
+                    <path id="line-steward-officials" />
+                    <path id="line-steward-lady" />
+                    <path id="line-captain-sergeant" />
+                    <path id="line-carver" />
+
+                    <path id="line-commander-submarshal" />
+                    <path id="line-commander-burgraves" />
+                    <path id="line-steward-burgraves" />
+                    <path id="line-burgrave-reeve-1" />
+                    <path id="line-burgrave-reeve-2" />
+                    <path id="line-burgrave-reeve-3" />
+                    <path id="line-burgrave-reeve-4" />
+                    <path id="line-burgrave-reeve-5" />
+                </svg>
+
+                <!-- ŘÁDEK 1 (grid-row: 1) -->
+                <div id="card-doctor" class="card" style="grid-row: 1;" onclick="showDetail('Amát Hradecký', 'Lékař', 'Osobní lékař královské rodiny.')">
+                    <div class="role">Lékař</div><div class="name">Amát Hradecký</div>
+                </div>
+                <div class="empty-cell" style="grid-row: 1;"></div>
+                <div class="empty-cell" style="grid-row: 1;"></div>
+                <div id="card-queen" class="card icon-card" style="grid-row: 1;" onclick="showDetail('Královna Alžběta', 'Královna', 'Vládkyně dvora a celého království.')">
+                    <div class="card-icon">👑</div>
+                    <div>
+                        <div class="role">Královna</div>
+                        <div class="name">Alžběta Richenza</div>
+                    </div>
+                </div>
+                <div class="empty-cell" style="grid-row: 1;"></div>
+                <div class="empty-cell" style="grid-row: 1;"></div>
+                <div class="empty-cell" style="grid-row: 1;"></div>
+
+                <!-- ŘÁDEK 2 (grid-row: 3) -->
+                <div id="card-confessor" class="card" style="grid-row: 3;" onclick="showDetail('Jan z Tasova', 'Zpovědník', 'Duchovní rádce královny.')">
+                    <div class="role">Zpovědník</div><div class="name">Jan z Tasova</div>
+                </div>
+                <div class="empty-cell" style="grid-row: 3;"></div>
+                <div class="empty-cell" style="grid-row: 3;"></div>
+                <div class="empty-cell" style="grid-row: 3;"></div>
+                <div class="empty-cell" style="grid-row: 3;"></div>
+                <div class="empty-cell" style="grid-row: 3;"></div>
+                <div class="empty-cell" style="grid-row: 3;"></div>
+
+                <!-- ŘÁDEK 3 (grid-row: 5) -->
+                <div class="empty-cell" style="grid-row: 5;"></div>
+                <div id="card-commander" class="card" style="grid-row: 5;" onclick="showDetail('Vznat z Lomnice', 'Velitel vojsk', 'Vrchní velitel vojsk a purkrabí v Chrudimi.')">
+                    <div class="role">Velitel vojsk</div><div class="name">Vznat z Lomnice</div>
+                </div>
+                <div class="empty-cell" style="grid-row: 5;"></div>
+                <div id="card-chancellor" class="card" style="grid-row: 5;" onclick="showDetail('Převor Hroznata', 'Kancléř', 'Královský kancléř a správce kanceláře.')">
+                    <div class="role">Kancléř</div><div class="name">Převor Hroznata</div>
+                </div>
+                <div id="card-steward" class="card" style="grid-row: 5;" onclick="showDetail('Jošt ze Štěkné', 'Hofmistr', 'Správce dvora a nadřízený dvorních úředníků.')">
+                    <div class="role">Hofmistr</div><div class="name">Jošt ze Štěkné</div>
+                </div>
+                <div id="card-chamberlain" class="card" style="grid-row: 5;" onclick="showDetail('Dobrohost z Ronšperka', 'Komoří', 'Správce komor a financí.')">
+                    <div class="role">Komoří</div><div class="name">Dobrohost z Ronšperka</div>
+                </div>
+                <div class="empty-cell" style="grid-row: 5;"></div>
+
+                <!-- ŘÁDEK 4 (grid-row: 7) -->
+                <div id="card-submarshal" class="card" style="grid-row: 7;" onclick="showDetail('Martin z Bílé', 'Podmaršálek', 'Zástupce maršálka podřízený veliteli vojsk.')">
+                    <div class="role">Podmaršálek</div><div class="name">Martin z Bílé</div>
+                </div>
+                <div class="empty-cell" style="grid-row: 7;"></div>
+                <div id="card-captain" class="card" style="grid-row: 7;" onclick="showDetail('Vladimír z Vildenberka', 'Hejtman král. stráže', 'Velitel královské stráže podřízený hofmistrovi a přímo královně.')">
+                    <div class="role">Hejtman král. stráže</div><div class="name">Vladimír z Vildenberka</div>
+                </div>
+                <div id="card-huntsman" class="card" style="grid-row: 7;" onclick="showDetail('Svatomír z Němčic', 'Lovčí', 'Správce královských honiteb a lovu.')">
+                    <div class="role">Lovčí</div><div class="name">Svatomír z Němčic</div>
+                </div>
+                <div id="card-steward-table" class="card" style="grid-row: 7;" onclick="showDetail('Petr z Posadowa', 'Stolník', 'Dohled nad zásobováním dvora, mlýny a sýpky.')">
+                    <div class="role">Stolník</div><div class="name">Petr z Posadowa</div>
+                </div>
+                <div id="card-cupbearer" class="card" style="grid-row: 7;" onclick="showDetail('Mikuláš z Blatné', 'Číšník', 'Správce panovníkových vinných sklepů, vinic, zajištění dostatku nápojů pro královský dvůr a přímou osobní obsluhu krále při slavnostních hostinách.')">
+                    <div class="role">Číšník</div><div class="name">Mikuláš z Blatné</div>
+                </div>
+                <div id="card-lady" class="card" style="grid-row: 7;" onclick="showDetail('Markéta z Doubravice', 'Komorná', 'Klíčnice a důvěrnice královny.')">
+                    <div class="role">Komorná</div><div class="name">Markéta z Doubravice</div>
+                </div>
+
+                <!-- ŘÁDEK 5 (grid-row: 9) -->
+                <div class="empty-cell" style="grid-row: 9;"></div>
+                <div class="empty-cell" style="grid-row: 9;"></div>
+                <div id="card-sergeant" class="card" style="grid-row: 9;" onclick="showDetail('Jan řečený Loupežník', 'Seržant král. stráže', 'Velitel oddílu královské stráže podřízený hejtmanovi.')">
+                    <div class="role">Seržant král. stráže</div><div class="name">Jan ř. Loupežník</div>
+                </div>
+                <div class="empty-cell" style="grid-row: 9;"></div>
+                <div id="card-carver" class="card" style="grid-row: 9;" onclick="showDetail('Přemysl ze Zástřizl', 'Kráječ', 'Kráječ pokrmů podřízený stolníkovi.')">
+                    <div class="role">Kráječ</div><div class="name">Přemysl ze Zástřizl</div>
+                </div>
+                <div class="empty-cell" style="grid-row: 9;"></div>
+                <div class="empty-cell" style="grid-row: 9;"></div>
+
+                <!-- ŘÁDEK 6 (grid-row: 11) -->
+                <div class="empty-cell" style="grid-row: 11;"></div>
+                <div id="card-burgrave-hradec" class="card" style="grid-row: 11;" onclick="showDetail('Macek z Nasavrk', 'Purkrabí Hradecký', 'Purkrabí v Hradci Králové.')">
+                    <div class="role">Purkrabí Hradecký</div><div class="name">Macek z Nasavrk</div>
+                </div>
+                <div id="card-burgrave-chrudim" class="card" style="grid-row: 11;" onclick="showDetail('Vznat z Lomnice', 'Purkrabí Chrudimský', 'Purkrabí v Chrudimi a velitel vojsk.')">
+                    <div class="role">Purkrabí Chrudimský</div><div class="name">Vznat z Lomnice</div>
+                </div>
+                <div id="card-burgrave-jaromer" class="card" style="grid-row: 11;" onclick="showDetail('Jiří z Rabštejna', 'Purkrabí Jaroměřský', 'Purkrabí v Jaroměři.')">
+                    <div class="role">Purkrabí Jaroměřský</div><div class="name">Jiří z Rabštejna</div>
+                </div>
+                <div id="card-burgrave-policka" class="card disabled" style="grid-row: 11;">
+                    <div class="role">Purkrabí Poličský</div><div class="name">—</div>
+                </div>
+                <div id="card-burgrave-myto" class="card disabled" style="grid-row: 11;">
+                    <div class="role">Purkrabí Mýtský</div><div class="name">—</div>
+                </div>
+                <div class="empty-cell" style="grid-row: 11;"></div>
+
+                <!-- ŘÁDEK 7 (grid-row: 13) -->
+                <div class="empty-cell" style="grid-row: 13;"></div>
+                <div id="card-reeve-hradec" class="card" style="grid-row: 13;" onclick="showDetail('Jakub řečený ze Švestky', 'Rychtář Hradecký', 'Správce spravedlnosti v Hradci.')">
+                    <div class="role">Rychtář Hradecký</div><div class="name">Jakub ř. ze Švestky</div>
+                </div>
+
+                <div id="card-reeve-chrudim" class="card" style="grid-row: 13;" onclick="showDetail('Jindřich Lomnický', 'Rychtář Chrudimský', 'Správce spravedlnosti v Chrudimi.')">
+                    <div class="role">Rychtář Chrudimský</div><div class="name">Jindřich Lomnický</div>
+                </div>
+
+                <div id="card-reeve-jaromer" class="card" style="grid-row: 13;" onclick="showDetail('Richard z Rysova', 'Rychtář Jaroměřský', 'Správce spravedlnosti v Jaroměři.')">
+                    <div class="role">Rychtář Jaroměřský</div><div class="name">Richard z Rysova</div>
+                </div>
+
+                <div id="card-reeve-policka" class="card disabled" style="grid-row: 13;">
+                    <div class="role">Rychtář Poličský</div><div class="name">—</div>
+                </div>
+                <div id="card-reeve-myto" class="card disabled" style="grid-row: 13;">
+                    <div class="role">Rychtář Mýtský</div><div class="name">—</div>
+                </div>
+                <div class="empty-cell" style="grid-row: 13;"></div>
+            </div>
+        </div>
+
+        <!-- Pop-up detail -->
+        <div id="popover" class="popover">
+            <div class="popover-header">
+                <div class="popover-avatar">🛡</div>
+                <div>
+                    <div id="pop-role" class="role"></div>
+                    <div id="pop-name" class="name" style="font-size: 1rem;"></div>
+                </div>
+            </div>
+            <div id="pop-desc" class="popover-text"></div>
+            <a href="#" id="pop-btn-more" class="btn-more" target="_blank" rel="noopener noreferrer">Zobrazit více</a>
+            <button class="btn-close" onclick="closeDetail()">Zpět</button>
+        </div>
+    </main>
+
+<script>
+    // Mapa adres podstránek pro jednotlivé osoby/projekty
+    const personUrls = {
+        'Královna Alžběta': 'https://hradeckydvur.net/clenove/alzbeta-richenza/',
+        'Petr z Posadowa': 'https://hradeckydvur.net/clenove/petr-z-posadowa/',
+        'Dobrohost z Ronšperka': 'https://hradeckydvur.net/clenove/dobrohost-z-ronsperka/',
+        'Jiří z Rabštejna': 'https://hradeckydvur.net/clenove/jiri-z-rabstejna/',
+        'Vladimír z Vildenberka': 'https://hradeckydvur.net/clenove/vladimir-z-vildenberka/',
+        'Vznat z Lomnice': 'https://hradeckydvur.net/clenove/pani-z-lomnice-a-tasova/',
+        'Jan z Tasova': 'https://hradeckydvur.net/clenove/pani-z-lomnice-a-tasova/',
+        'Martin z Bílé': 'https://hradeckydvur.net/clenove/martin-z-bile/',
+        'Přemysl ze Zástřizl': 'https://hradeckydvur.net/clenove/zastrizlovi/',
+        'Mikuláš z Blatné': 'https://hradeckydvur.net/clenove/mikulas-z-blatne/',
+        'Jindřich Lomnický': 'https://hradeckydvur.net/clenove/jindrich-lomnicky/',
+        'Richard z Rysova': 'https://hradeckydvur.net/clenove/richard-z-rysova/',
+        'Jakub řečený ze Švestky': 'https://hradeckydvur.net/clenove/jakub/',
+        'Macek z Nasavrk': 'https://hradeckydvur.net/clenove/hradecky-purkrabi-macek-receny-mnich/',
+        'Převor Hroznata': 'https://hradeckydvur.net/clenove/prevor-hroznata/',
+        'Amát Hradecký': 'https://hradeckydvur.net/clenove/amat-hradecky/',
+        'Markéta z Doubravice': 'https://hradeckydvur.net/clenove/marketa-z-doubravice/',
+'Jošt ze Štěkně': 'https://hradeckydvur.net/clenove/jost-ze-stekne/',
+'Jan řečený Loupežník': 'https://hradeckydvur.net/clenove/jan-loupeznik/',
+'Svatomír z Němčic': 'https://hradeckydvur.net/clenove/svatomir-z-nemcic/',
+
+    };
+
+    const defaultUrl = 'https://hradeckydvur.net/clenove-a-projekty/';
+
+    function drawLines() {
+        const grid = document.getElementById('courtGrid');
+        const gridRect = grid.getBoundingClientRect();
+
+        const getCoords = (id) => {
+            const el = document.getElementById(id).getBoundingClientRect();
+            return {
+                left: el.left - gridRect.left,
+                right: el.right - gridRect.left,
+                top: el.top - gridRect.top,
+                bottom: el.bottom - gridRect.top,
+                centerX: el.left + el.width / 2 - gridRect.left,
+                centerY: el.top + el.height / 2 - gridRect.top
+            };
+        };
+
+        const queen = getCoords('card-queen');
+        const doctor = getCoords('card-doctor');
+        const confessor = getCoords('card-confessor');
+        const commander = getCoords('card-commander');
+        const chancellor = getCoords('card-chancellor');
+        const steward = getCoords('card-steward');
+        const chamberlain = getCoords('card-chamberlain');
+
+        const submarshal = getCoords('card-submarshal');
+        
+        const captain = getCoords('card-captain');
+        const huntsman = getCoords('card-huntsman');
+        const stewardTable = getCoords('card-steward-table');
+        const cupbearer = getCoords('card-cupbearer');
+        const lady = getCoords('card-lady');
+
+        const sergeant = getCoords('card-sergeant');
+        const carver = getCoords('card-carver');
+
+        const burgraveHradec = getCoords('card-burgrave-hradec');
+        const burgraveChrudim = getCoords('card-burgrave-chrudim');
+        const burgraveJaromer = getCoords('card-burgrave-jaromer');
+        const burgravePolicka = getCoords('card-burgrave-policka');
+        const burgraveMyto = getCoords('card-burgrave-myto');
+
+        const reeveHradec = getCoords('card-reeve-hradec');
+        const reeveChrudim = getCoords('card-reeve-chrudim');
+        const reeveJaromer = getCoords('card-reeve-jaromer');
+        const reevePolicka = getCoords('card-reeve-policka');
+        const reeveMyto = getCoords('card-reeve-myto');
+
+        // 1. Královna -> Lékař & Zpovědník
+        const docBranchX = doctor.right + 25;
+        const pathQueenDocConf = 
+            `M ${queen.left} ${queen.centerY} ` +
+            `L ${docBranchX} ${queen.centerY} ` +
+            `L ${docBranchX} ${doctor.centerY} L ${doctor.right} ${doctor.centerY} ` +
+            `M ${docBranchX} ${queen.centerY} ` +
+            `L ${docBranchX} ${confessor.centerY} L ${confessor.right} ${confessor.centerY}`;
+        document.getElementById('line-queen-doctor-confessor').setAttribute('d', pathQueenDocConf);
+
+        // 2. Hlavní větev z Královny směrem dolů -> Velitel vojsk, Kancléř, Hofmistr, Komoří
+        const topBarY = queen.bottom + (commander.top - queen.bottom) / 2;
+        const pathQueenMainBranch = 
+            `M ${queen.centerX} ${queen.bottom} L ${queen.centerX} ${topBarY} ` +
+            `L ${commander.centerX} ${topBarY} L ${commander.centerX} ${commander.top} ` +
+            `M ${queen.centerX} ${topBarY} L ${chancellor.centerX} ${topBarY} L ${chancellor.centerX} ${chancellor.top} ` +
+            `M ${queen.centerX} ${topBarY} L ${steward.centerX} ${topBarY} L ${steward.centerX} ${steward.top} ` +
+            `M ${queen.centerX} ${topBarY} L ${chamberlain.centerX} ${topBarY} L ${chamberlain.centerX} ${chamberlain.top}`;
+        document.getElementById('line-queen-main-branch').setAttribute('d', pathQueenMainBranch);
+
+        // 2b. Čára od Královny vpravo a dolů ke Komorné
+        const pathQueenLady = 
+            `M ${queen.right} ${queen.centerY} ` +
+            `L ${lady.centerX} ${queen.centerY} ` +
+            `L ${lady.centerX} ${lady.top}`;
+        document.getElementById('line-queen-lady').setAttribute('d', pathQueenLady);
+
+        // 2c. Čára od Královny k Hejtmanovi král. stráže
+        const pathQueenCaptain = 
+            `M ${queen.centerX} ${queen.bottom} ` +
+            `L ${queen.centerX} ${topBarY} ` +
+            `L ${captain.centerX} ${topBarY} ` +
+            `L ${captain.centerX} ${captain.top}`;
+        document.getElementById('line-queen-captain').setAttribute('d', pathQueenCaptain);
+
+        // 3. Hofmistr -> Hejtman král. stráže, Lovčí, Stolník, Číšník
+        const midBarY = steward.bottom + (captain.top - steward.bottom) / 2;
+        const pathStewardOff = 
+            `M ${steward.centerX} ${steward.bottom} L ${steward.centerX} ${midBarY} ` +
+            `L ${captain.centerX} ${midBarY} L ${captain.centerX} ${captain.top} ` +
+            `M ${steward.centerX} ${midBarY} L ${huntsman.centerX} ${midBarY} L ${huntsman.centerX} ${huntsman.top} ` +
+            `M ${steward.centerX} ${midBarY} L ${stewardTable.centerX} ${midBarY} L ${stewardTable.centerX} ${stewardTable.top} ` +
+            `M ${steward.centerX} ${midBarY} L ${cupbearer.centerX} ${midBarY} L ${cupbearer.centerX} ${cupbearer.top}`;
+        document.getElementById('line-steward-officials').setAttribute('d', pathStewardOff);
+
+        // 3b. Hofmistr -> Komorná
+        const pathStewardLady = 
+            `M ${steward.centerX} ${steward.bottom} ` +
+            `L ${steward.centerX} ${midBarY} ` +
+            `L ${lady.centerX} ${midBarY} ` +
+            `L ${lady.centerX} ${lady.top}`;
+        document.getElementById('line-steward-lady').setAttribute('d', pathStewardLady);
+
+        // 4. Hejtman král. stráže -> Seržant král. stráže
+        document.getElementById('line-captain-sergeant').setAttribute('d', `M ${captain.centerX} ${captain.bottom} L ${sergeant.centerX} ${sergeant.top}`);
+
+        // 5. Stolník -> Kráječ
+        document.getElementById('line-carver').setAttribute('d', `M ${stewardTable.centerX} ${stewardTable.bottom} L ${carver.centerX} ${carver.top}`);
+
+        // 6. Velitel vojsk -> Podmaršálek
+        const midY2 = commander.bottom + (submarshal.top - commander.bottom) / 2;
+        document.getElementById('line-commander-submarshal').setAttribute('d', `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midY2} L ${submarshal.centerX} ${midY2} L ${submarshal.centerX} ${submarshal.top}`);
+
+        // 7. Velitel vojsk -> Všichni purkrabí
+        const midGap56Y = sergeant.bottom + (burgraveHradec.top - sergeant.bottom) / 2;
+        const pathCommanderBurgraves = 
+            `M ${commander.centerX} ${commander.bottom} L ${commander.centerX} ${midGap56Y} ` +
+            `L ${burgraveHradec.centerX} ${midGap56Y} L ${burgraveHradec.centerX} ${burgraveHradec.top} ` +
+            `M ${commander.centerX} ${midGap56Y} L ${burgraveChrudim.centerX} ${midGap56Y} L ${burgraveChrudim.centerX} ${burgraveChrudim.top} ` +
+            `M ${commander.centerX} ${midGap56Y} L ${burgraveJaromer.centerX} ${midGap56Y} L ${burgraveJaromer.centerX} ${burgraveJaromer.top} ` +
+            `M ${commander.centerX} ${midGap56Y} L ${burgravePolicka.centerX} ${midGap56Y} L ${burgravePolicka.centerX} ${burgravePolicka.top} ` +
+            `M ${commander.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${midGap56Y} L ${burgraveMyto.centerX} ${burgraveMyto.top}`;
+        document.getElementById('line-commander-burgraves').setAttribute('d', pathCommanderBurgraves);
+
+        // 7b. Hofmistr -> Purkrabí (svislá čára přesně v polovině mezi Hejtmanem a spojnicí Velitele vojsk)
+        const captainLeft = captain.left;
+        const commanderX = commander.centerX;
+        const lineX = commanderX + (captainLeft - commanderX) / 2;
+
+        const pathStewardBurgraves = 
+            `M ${steward.centerX} ${steward.bottom} ` +
+            `L ${steward.centerX} ${midBarY} ` +
+            `L ${lineX} ${midBarY} ` +
+            `L ${lineX} ${midGap56Y}`;
+        document.getElementById('line-steward-burgraves').setAttribute('d', pathStewardBurgraves);
+
+        // 8. Purkrabí -> Rychtáři
+        document.getElementById('line-burgrave-reeve-1').setAttribute('d', `M ${burgraveHradec.centerX} ${burgraveHradec.bottom} L ${reeveHradec.centerX} ${reeveHradec.top}`);
+        document.getElementById('line-burgrave-reeve-2').setAttribute('d', `M ${burgraveChrudim.centerX} ${burgraveChrudim.bottom} L ${reeveChrudim.centerX} ${reeveChrudim.top}`);
+        document.getElementById('line-burgrave-reeve-3').setAttribute('d', `M ${burgraveJaromer.centerX} ${burgraveJaromer.bottom} L ${reeveJaromer.centerX} ${reeveJaromer.top}`);
+        document.getElementById('line-burgrave-reeve-4').setAttribute('d', `M ${burgravePolicka.centerX} ${burgravePolicka.bottom} L ${reevePolicka.centerX} ${reevePolicka.top}`);
+        document.getElementById('line-burgrave-reeve-5').setAttribute('d', `M ${burgraveMyto.centerX} ${burgraveMyto.bottom} L ${reeveMyto.centerX} ${reeveMyto.top}`);
+    }
+
+    function showDetail(name, role, desc) {
+        document.getElementById('pop-name').innerText = name;
+        document.getElementById('pop-role').innerText = role;
+        document.getElementById('pop-desc').innerText = desc;
+        
+        const btnMore = document.getElementById('pop-btn-more');
+        btnMore.href = personUrls[name] || defaultUrl;
+
+        document.getElementById('popover').classList.add('active');
+    }
+
+    function closeDetail() {
+        document.getElementById('popover').classList.remove('active');
+    }
+
+    window.addEventListener('load', drawLines);
+    window.addEventListener('resize', drawLines);
+</script>
+</body>
+</html>
