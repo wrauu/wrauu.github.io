@@ -28,8 +28,9 @@
             color: #ffffff;
             font-family: 'Playfair Display', serif;
             display: flex;
-	    flex-direction: column; /* <-- PŘIDAT TENTO ŘÁDEK */
-            justify-content: center;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;        /* Zarovná všechna dítka body na střed */
             min-height: 100vh;
             overflow-x: hidden;
             overflow-y: auto;
@@ -37,10 +38,11 @@
 
         main {
             flex-grow: 1;
-            padding: 15px;
+            padding: 20px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: flex-start;
             width: 100%;
             max-width: 1400px;
         }
@@ -275,13 +277,11 @@
             font-size: 0.75rem;
         }
     </style>
-<!-- ===================== SITE HEADER – STYLY (START) =====================
-     Sdílená hlavička s menu. Při extrakci čistého obsahu stránky
-     lze celý tento blok (až po "KONEC") bez náhrady odstranit. -->
+<!-- ===================== SITE HEADER – STYLY (START) ===================== -->
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&display=swap" rel="stylesheet">
 <style id="site-header-styles">
 html{scrollbar-gutter:stable}
-.site-header{--sh-gold:#c99d4a;--sh-gold-light:#f2c45f;--sh-line:#4a4032;position:sticky;top:0;z-index:100;background:linear-gradient(180deg,#262118,#171512);border-bottom:1px solid var(--sh-line);box-shadow:0 6px 20px #0008;font-family:Georgia,"Times New Roman",serif}
+.site-header{--sh-gold:#c99d4a;--sh-gold-light:#f2c45f;--sh-line:#4a4032;position:sticky;top:0;z-index:100;width:100%;background:linear-gradient(180deg,#262118,#171512);border-bottom:1px solid var(--sh-line);box-shadow:0 6px 20px #0008;font-family:Georgia,"Times New Roman",serif}
 .site-header *{box-sizing:border-box}
 .site-header .header-inner{max-width:1300px;margin:auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .site-header .brand{font-family:'Cinzel',serif;font-weight:700;font-size:1.15rem;letter-spacing:.08em;color:var(--sh-gold);text-decoration:none;font-variant:small-caps}
@@ -294,17 +294,15 @@ html{scrollbar-gutter:stable}
 <!-- ===================== SITE HEADER – STYLY (KONEC) ===================== -->
 </head>
 <body>
-<!-- ===================== SITE HEADER – MENU (START) =====================
-     Sdílená hlavička s menu. Při extrakci čistého obsahu stránky
-     lze celý tento blok (až po "KONEC") bez náhrady odstranit. -->
+<!-- ===================== SITE HEADER – MENU (START) ===================== -->
 <header class="site-header">
   <div class="header-inner">
-    <a class="brand" href="struktura.html">Interaktivní přehled struktury dvora</a>
+    <a class="brand" href="lokace.html">Interaktivní historická mapa sídel členů dvora</a>
     <nav class="main-nav" aria-label="Hlavní menu">
       <a href="index.html">Projekt</a>
-      <a href="lokace.html">Lokace</a>
-      <a href="struktura.html" class="is-active" aria-current="page">Struktura</a>
-<a href="pravidla.html">Pravidla</a>
+      <a href="lokace.html" class="is-active" aria-current="page">Lokace</a>
+      <a href="struktura.html">Struktura</a>
+      <a href="pravidla.html">Pravidla</a>
       <a href="galerie.html">Galerie</a>
     </nav>
   </div>
@@ -379,8 +377,8 @@ html{scrollbar-gutter:stable}
                 <div id="card-chancellor" class="card" style="grid-row: 5;" onclick="showDetail('Převor Hroznata', 'Kancléř', 'Královský kancléř a správce kanceláře.')">
                     <div class="role">Kancléř</div><div class="name">Převor Hroznata</div>
                 </div>
-                <div id="card-steward" class="card" style="grid-row: 5;" onclick="showDetail('Jošt ze Štěkné', 'Hofmistr', 'Správce dvora a nadřízený dvorních úředníků.')">
-                    <div class="role">Hofmistr</div><div class="name">Jošt ze Štěkné</div>
+                <div id="card-steward" class="card" style="grid-row: 5;" onclick="showDetail('Jošt ze Štěkně', 'Hofmistr', 'Správce dvora a nadřízený dvorních úředníků.')">
+                    <div class="role">Hofmistr</div><div class="name">Jošt ze Štěkně</div>
                 </div>
                 <div id="card-chamberlain" class="card" style="grid-row: 5;" onclick="showDetail('Dobrohost z Ronšperka', 'Komoří', 'Správce komor a financí.')">
                     <div class="role">Komoří</div><div class="name">Dobrohost z Ronšperka</div>
@@ -499,10 +497,9 @@ html{scrollbar-gutter:stable}
         'Převor Hroznata': 'https://hradeckydvur.net/clenove/prevor-hroznata/',
         'Amát Hradecký': 'https://hradeckydvur.net/clenove/amat-hradecky/',
         'Markéta z Doubravice': 'https://hradeckydvur.net/clenove/marketa-z-doubravice/',
-'Jošt ze Štěkně': 'https://hradeckydvur.net/clenove/jost-ze-stekne/',
-'Jan řečený Loupežník': 'https://hradeckydvur.net/clenove/jan-loupeznik/',
-'Svatomír z Němčic': 'https://hradeckydvur.net/clenove/svatomir-z-nemcic/',
-
+        'Jošt ze Štěkně': 'https://hradeckydvur.net/clenove/jost-ze-stekne/',
+        'Jan řečený Loupežník': 'https://hradeckydvur.net/clenove/jan-loupeznik/',
+        'Svatomír z Němčic': 'https://hradeckydvur.net/clenove/svatomir-z-nemcic/',
     };
 
     const defaultUrl = 'https://hradeckydvur.net/clenove-a-projekty/';
